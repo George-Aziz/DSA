@@ -84,7 +84,7 @@ public class FileManager
 		
 		if (lineArray.length == 1) // If only one element on a line means name input
 		{
-			graph.addUser(lineArray[0], 1);//Value could be anything, I just do 1 as a placeholder value
+			graph.addUser(lineArray[0]);//Value could be anything, I just do 1 as a placeholder value
 		}
 		
 		if (lineArray.length == 2) // If two elements on a line means a person following another person

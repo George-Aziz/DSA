@@ -128,6 +128,45 @@ public class DSALinkedList implements Iterable , Serializable
         return nodeValue;
     }
 
+    public void removeNode(Object value)
+    {
+        if(head != null)
+        {
+            if(head.getValue() == value)
+            {
+                removeFirst(); // if the value is the head then the first node is removed
+            }
+            else if(tail.getValue() == value)
+            {
+                removeLast(); // if the value is at the tail, the last node is removed
+            }
+            else
+            { 
+                DSAListNode node, nextNode;
+    
+                node = head;
+                if (node == null)
+                {
+                    throw new IllegalArgumentException("Node not found!");
+                }
+                else 
+                {
+                    while(node != null) 
+                    {
+                        nextNode = node.getNext();
+
+                        if (node.getValue() == value)
+                        {
+                            node.getNext().setPrev(node.getPrev()); // Makes the deleted node cut off from the references
+                            node.getPrev().setNext(node.getNext());
+                        }
+                        node = nextNode;
+                    }
+                }
+            }  
+        }
+    }
+
     public Iterator iterator() //Return a new Iterator of internal type DSALinkedListIterator
     {
         return new DSALinkedListIterator(this); //Hooks the iterator to this DSALinkedList object
@@ -159,7 +198,8 @@ public class DSALinkedList implements Iterable , Serializable
             }
             return value;
         }
-        public void remove()
+
+        public void remove(Object value)
         {
             throw new UnsupportedOperationException("Not Supported");
         }

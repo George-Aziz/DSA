@@ -75,13 +75,13 @@ public class UserInterface
 					findUser(graph);
 					break;
 				case 6:
-					//Remove user
+					removeUser(graph);
 					break;
 				case 7:
 					addFollow(graph);
 					break;
 				case 8:
-					//Remove follow
+					removeFollow(graph);
 					break;
 				case 9:
 					insertPostManual(graph);
@@ -192,7 +192,7 @@ public class UserInterface
 		String user;
 		user = inputNewUser("\nPlease input the name of the new user:", "ERROR: Can't have empty name for user"); 
 
-		graph.addUser(user, 0);
+		graph.addUser(user);
 	}
 
 
@@ -205,8 +205,8 @@ public class UserInterface
 	public void addFollow(DSAGraph graph)
 	{
 		String follower, following;
-		follower = inputNewUser("\nPlease input the name of the user you would like to add a follower to:", "ERROR: Can't have empty name for user"); 
-		following = inputNewUser("\nPlease input the name of the user you would like to add a follower to:", "ERROR: Can't have empty name for user"); 
+		follower = inputUser("\nPlease input the name of the user you would like to add a follower to:", "ERROR: Can't have empty name for user"); 
+		following = inputUser("\nPlease input the name of the user you would like to follow:", "ERROR: Can't have empty name for user"); 
 
 		graph.addFollow(follower, following); //Follower follows "following"
 	}
@@ -221,11 +221,41 @@ public class UserInterface
 	public void findUser(DSAGraph graph)
 	{
 		String user;
-		user = inputUser("\nPlease input the name of the user you want to find:", "ERROR: User not found!"); 
+		user = inputUser("\nPlease input the name of the user you want to find:", "ERROR: User not found!");
 
 		graph.displayUserInfo(user);
 	}
 
+
+	/*****************************************************************************************
+	SUBMODULE: removeUser
+	IMPORT: graph (DSAGraph)
+	EXPORT: none
+	ASSERTION: Finds the user specefied and then removes them from the network
+	******************************************************************************************/
+	public void removeUser(DSAGraph graph)
+	{
+		String userName;
+		userName = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
+
+		graph.removeUser(userName);
+	}
+
+
+	/*****************************************************************************************
+	SUBMODULE: removeFollow
+	IMPORT: graph (DSAGraph)
+	EXPORT: none
+	ASSERTION: Finds the user, and then finds the user in their follow list and removes it
+	******************************************************************************************/
+	public void removeFollow(DSAGraph graph)
+	{
+		String userName, userName1;
+		userName = inputUser("\nPlease input the name of the user you want to remove follow from:", "ERROR: User not found!");
+		userName1 = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
+
+		graph.removeFollow(userName, userName1);
+	}
 	
 	/*************************
 	SUBMODULE: showMessage
