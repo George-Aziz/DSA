@@ -87,16 +87,26 @@ public class FileManager
 			graph.addUser(lineArray[0]);//Value could be anything, I just do 1 as a placeholder value
 		}
 		
-		if (lineArray.length == 2) // If two elements on a line means a person following another person
+		if (lineArray.length == 2)
 		{
-			graph.addFollow(lineArray[0], lineArray[1]); //Makes the person follow the other person to the right of the :
+			if(lineArray[0].equals("A"))
+			{
+				graph.addUser(lineArray[1]);
+			}
+			else
+			{
+				if(graph.hasUser(lineArray[0]) && graph.hasUser(lineArray[1]))
+				{
+					graph.addFollow(lineArray[1], lineArray[0]); //Makes the person follow the other person to the right of the :
+				}
+			}
 		}
 
 		if (lineArray.length == 3)
 		{
 			if (lineArray[0].equals("F")) //Means that a follow event will be added
 			{
-				graph.addFollow(lineArray[1], lineArray[2]); 
+				graph.addFollow(lineArray[2], lineArray[1]); 
 			}
 
 			if (lineArray[0].equals("P")) //Means that a post event will be added

@@ -31,12 +31,9 @@ public class DSAGraph
         User userOne, userTwo;
 
         userOne = getUser(userName); //gets user with userName
-        userTwo = getUser(userName1); //gets user with userName1 
-
+        userTwo = getUser(userName1); //gets user with userName1
         userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for VertexOne
-
         followCount++;
-        
     }
 
     public void addLike(Object userName, Object userName1, Object postData)
@@ -226,11 +223,11 @@ public class DSAGraph
     public void displayAsList()
     {
         Iterator iter = users.iterator();
-        System.out.println("\nADJACENCY LIST: \n");
+        System.out.println("\nCURRENT NETWORK STATUS:\n"); //Current user to indicate all follows related to this user
         while(iter.hasNext()) //First iterator to find the user
         {
             User user = (User)iter.next(); //The next thing found is a user
-            System.out.print(user.getUserName() +": "); //Current user to indicate all follows related to this user
+            System.out.print(user.getUserName() +" follows: "); //Current user to indicate all follows related to this user
             DSALinkedList list = user.getFollows(); //List of follows for current user
             Iterator linkIter = list.iterator(); 
 
