@@ -296,29 +296,47 @@ public class DSAGraph
     * ******************************************************************************/
     public void timeStep(double likeProb, double followProb)
     {
-        Iterator iter = users.iterator();
-        while(iter.hasNext()) //Go through every user in the main linked list
+
+        Iterator usersIter = users.iterator(); 
+        while(usersIter.hasNext()) //Goes through the users in the network
         {
-            User curUser = (User)iter.next(); //The next thing found is a user
-            DSALinkedList mainFollowList = curUser.getFollows();
-            Iterator mainFollowIter = mainFollowList.iterator();
-            while(mainFollowIter.hasNext())
+            User userOne = (User)usersIter.next(); //The first user [A]->B->C
+            //Goes through the users in the network again 
+            Iterator usersIterTwo = users.iterator(); 
+
+            while(usersIterTwo.hasNext()) //Goes through all the users from main list again
             {
-                User followingUser = (User)mainFollowIter.next(); 
-                DSALinkedList followingPosts = followingUser.getPosts();
-                Iterator followingPostIter = followingPosts.iterator();
-                while(followingPostIter.hasNext())
+                User userTwo = (User)usersIterTwo.next(); //The middle user A->[B]->C
+
+                DSALinkedList userTwoList = userTwo.getFollows(); //Gets all the people userTwo is following
+                Iterator followerIter = userTwoList.iterator();
+                while(followerIter.hasNext())
                 {
-                    Post curPost = (Post)followingPostIter.next(); 
-                    if(Math.random() <= likeProb)
+                    User userThree = (User)followerIter.next(); //The End user A->B->[C]
+                    DSALinkedList listPosts = userThree.getPosts();
+                    Iterator postIter = listPosts.iterator(); //Iterator for the posts of userThree
+                    while(postIter.hasNext())
                     {
-                        curPost.addLike(curUser);
+                        Post curPost = (Post)postIter.next(); //Gets the post of the userThree
+                        if(Math.random() <= likeProb) 
+                        {
+                            curPost.addLike(userTwo); //Adds a like to the post if probability is met
+                        }
+
+                        //If the userTwo likes userThree's post AND userOne is following userTwo
+                        if(isLiking(userThree.getUserName(), userTwo.getUserName(), curPost) && isFollowing(userOne.getUserName(), userTwo.getUserName()))
+                        { 
+                            if(Math.random() <= followProb)
+                            {
+                                addFollow(userOne.getUserName(),userThree.getUserName()); //userOne follows userThree A->C 
+                            }
+                        } 
                     }
                 }
             }
         }
 
-        Iterator usersIter = users.iterator();
+       /*  Iterator usersIter = users.iterator();
         while(usersIter.hasNext()) //Goes through the all the users from main list
         {
             User userOne = (User)usersIter.next(); 
@@ -350,7 +368,7 @@ public class DSAGraph
                     }
                 }
             }
-        }
+        } */
     }
 
     /***********************************************************************
