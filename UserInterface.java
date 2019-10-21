@@ -96,7 +96,7 @@ public class UserInterface
 					//Statistics
 					break;
 				case 12: //Run update/time-step
-					/* graph.timeStep(likeProb, followProb); */
+					graph.timeStep(likeProb, followProb);
 					break;
 				case 13:
 					//Save to file
@@ -207,11 +207,11 @@ public class UserInterface
 	******************************************************************************************/
 	public void addFollow(DSAGraph graph)
 	{
-		String follower, following;
-		follower = inputUser("\nPlease input the name of the user you would like to add a follower to:", "ERROR: Can't have empty name for user"); 
-		following = inputUser("\nPlease input the name of the user you would like to follow:", "ERROR: Can't have empty name for user"); 
+		String main, follow;
+		main = inputUser("\nPlease input the name of the user that wants to follow:", "ERROR: Can't have empty name for user"); 
+		follow = inputUser("\nPlease input the name of the uer that " + main + " wants to follow:", "ERROR: Can't have empty name for user"); 
 
-		graph.addFollow(follower, following); //Follower follows "following"
+		graph.addFollow(main, follow); //Follower follows "following"
 	}
 
 

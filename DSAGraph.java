@@ -171,7 +171,7 @@ public class DSAGraph
         while(postsIter.hasNext()) //Second iterator to find follows for each user
         {
             Post postData = (Post)postsIter.next();
-            System.out.print(postData.getPostData()); //The userName of the user in the follows LinkedList
+            System.out.print(postData.getPostData() + postData.getLikeCount()); //The userName of the user in the follows LinkedList
             if(postsIter.hasNext())
             {
                 System.out.print("\n"); // add a comma after each userName in the list
@@ -218,6 +218,13 @@ public class DSAGraph
         return state;//Boolean True/False
     }
 
+
+    /***********************************************************************
+    * SUBMODULE: isLiking()
+    * IMPORTS: userName1 (Object), userName2 (Object), inPost (Object)
+    * EXPORTS: state (boolean)
+    * ASSERTION: Checks if userName 2 has liked userOne's post
+    * **********************************************************************/
     public boolean isLiking(Object userName1, Object userName2, Object inPost)
     {
         boolean state = false; //By default the state is false
@@ -295,21 +302,13 @@ public class DSAGraph
                 while(followingPostIter.hasNext())
                 {
                     Post curPost = (Post)followingPostIter.next(); 
-                    if(Math.random() >= likeProb)
+                    if(Math.random() <= likeProb)
                     {
                         curPost.addLike(curUser);
                     }
                 }
             } 
         } 
-        if(Math.random() >= followProb)
-        {
-
-            if(Math.random() >= likeProb)
-            {
-
-            }
-        }
     }
 
     /***********************************************************************
@@ -381,11 +380,11 @@ public class DSAGraph
 
         public void addLike(User user)
         {
-            if (!(isLiking(this.getPoster(), user.getUserName(), this))) //Ensuring a person can only like a post once
-            {
+           /*  if (!(isLiking(this.getPoster(), user.getUserName(), this))) //Ensuring a person can only like a post once
+            { */
                 this.likes.insertLast(user);
                 likeCount++;
-            }
+           /*  } */
         }
 
         public String getPoster()
