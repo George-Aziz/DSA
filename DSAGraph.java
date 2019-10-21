@@ -328,7 +328,7 @@ public class DSAGraph
             while(usersIterTwo.hasNext()) //Goes through all the users from main list again
             {
                 User userTwo = (User)usersIterTwo.next();
-                if (isFollowing(userTwo.getUserName(), userOne.getUserName()))
+                if (isFollowing(userOne.getUserName(), userTwo.getUserName()))
                 {
                     DSALinkedList userTwoList = userTwo.getFollows();
                     Iterator followerIter = userTwoList.iterator(); //Goes through the following list of the second userIterator
