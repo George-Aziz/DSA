@@ -22,9 +22,9 @@ public class DSAGraph
         if (hasUser(userName) == false)
         {
             users.insertLast(user); //Puts the newly made user in the users linked list
+            System.out.println("New user added: " + userName);
+            userCount++; //increases userCount after each user is created
         }
-
-        userCount++; //increases userCount after each user is created
     }
 
     public void addFollow (Object userName, Object userName1) //Directed edges
@@ -33,11 +33,11 @@ public class DSAGraph
 
         userOne = getUser(userName); //gets user with userName
         userTwo = getUser(userName1);
-        if(hasUser(userName) && hasUser(userName1)) //Only adds the edge if both users exist
-        { 
+        if(hasUser(userName) && hasUser(userName1) && (!userOne.equals(userTwo))) //Only adds the edge if both users exist
+        {  
             userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for VertexOne
             followCount++;
-        }
+        } 
     }
 
     public void addLike(Object userName, Object userName1, Object postData)
@@ -80,6 +80,7 @@ public class DSAGraph
             DSALinkedList list = curUser.getFollows();
             list.removeNode(user);
         } 
+        System.out.println(user.getUserName() + " has deleted their account!");
     }
 
     public void removeFollow(Object follower, Object following )
@@ -88,6 +89,7 @@ public class DSAGraph
         User followingUser = getUser(following);
         DSALinkedList list = followerUser.getFollows();
         list.removeNode(followingUser);
+        System.out.println(followerUser.getUserName() + " has unfollowed " + followingUser.getUserName() +"!");
     }
 
     public void addPost (Object userName, String postData)
@@ -99,6 +101,7 @@ public class DSAGraph
             String name = userOne.getUserName();
             Post newPost = new Post(postData, name);
             userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
+            System.out.println(name + " has added a new post!");
         }
     }
 
@@ -172,6 +175,13 @@ public class DSAGraph
         {
             Post postData = (Post)postsIter.next();
             System.out.print(postData.getPostData() + postData.getLikeCount()); //The userName of the user in the follows LinkedList
+            DSALinkedList likeList = postData.getLikes();
+            Iterator likesIter = likeList.iterator();
+            while(likesIter.hasNext())
+            {
+                User liker = (User)likesIter.next();
+                System.out.print(liker.getUserName() + ",");
+            }
             if(postsIter.hasNext())
             {
                 System.out.print("\n"); // add a comma after each userName in the list
@@ -225,15 +235,13 @@ public class DSAGraph
     * EXPORTS: state (boolean)
     * ASSERTION: Checks if userName 2 has liked userOne's post
     * **********************************************************************/
-    public boolean isLiking(Object userName1, Object userName2, Object inPost)
+    public boolean isLiking(Object userName1, Object userName2, Post post)
     {
         boolean state = false; //By default the state is false
 
         User userOne; //User Two is the person getting checked for in the likes
-        Post post; //Post by userOne
-
+    
         userOne = getUser(userName1); //userName1 is the person with the post
-        post = (Post)inPost;
 
         DSALinkedList likes = post.getLikes();
         Iterator iter = likes.iterator();
@@ -241,7 +249,7 @@ public class DSAGraph
         while (iter.hasNext())
         {
             User iterUser = (User)iter.next();
-            if(iterUser.getUserName() == userName2) //If the userName of user one is equal to userName2 which is another user then isFollowing
+            if(iterUser.getUserName().equals(userName2)) //If the userName of user one is equal to userName2 which is another user then isFollowing
             {
                 state = true;
             }
@@ -307,8 +315,43 @@ public class DSAGraph
                         curPost.addLike(curUser);
                     }
                 }
-            } 
-        } 
+            }
+        }
+
+        Iterator usersIter = users.iterator();
+        
+        while(usersIter.hasNext()) //Goes through the all the users from main list
+        {
+            User userOne = (User)usersIter.next(); 
+            Iterator usersIterTwo = users.iterator(); //Iterator for the edges of the main vertex
+
+            while(usersIterTwo.hasNext()) //Goes through all the users from main list again
+            {
+                User userTwo = (User)usersIterTwo.next();
+                if (isFollowing(userTwo.getUserName(), userOne.getUserName()))
+                {
+                    DSALinkedList userTwoList = userTwo.getFollows();
+                    Iterator followerIter = userTwoList.iterator(); //Goes through the following list of the second userIterator
+                    while(followerIter.hasNext())
+                    {
+                        User userThree = (User)followerIter.next(); //Gets the users from the following list
+                        DSALinkedList posts = userThree.getPosts(); //Gets the post of the third user who User2->User3
+                        Iterator postIter = posts.iterator();
+                        while(postIter.hasNext())
+                        {
+                            Post curPost = (Post)postIter.next(); 
+                            if(isLiking(userThree.getUserName(), userTwo.getUserName(), curPost) && isFollowing(userOne.getUserName(), userTwo.getUserName()))
+                            { 
+                                if(Math.random() <= followProb)
+                                {
+                                    addFollow(userOne.getUserName(),userThree.getUserName());
+                                }
+                            } 
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /***********************************************************************
@@ -344,6 +387,7 @@ public class DSAGraph
             if (!(isFollowing(this.getUserName(), user.getUserName()))) //Ensuring a person can only follow a person once
             {
                 this.follows.insertLast(user); //Adds edge by adding the user to the list of follows for selected user
+                System.out.println(this.getUserName() + " is now following " + user.getUserName() + "!");
             }
         }
 
@@ -380,11 +424,11 @@ public class DSAGraph
 
         public void addLike(User user)
         {
-           /*  if (!(isLiking(this.getPoster(), user.getUserName(), this))) //Ensuring a person can only like a post once
-            { */
+           if (!(isLiking(this.getPoster(), user.getUserName(), this))) //Ensuring a person can only like a post once
+            { 
                 this.likes.insertLast(user);
                 likeCount++;
-           /*  } */
+            } 
         }
 
         public String getPoster()
