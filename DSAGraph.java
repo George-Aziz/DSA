@@ -32,10 +32,9 @@ public class DSAGraph
         User userOne, userTwo;
 
         userOne = getUser(userName); //gets user with userName
-        userTwo = getUser(userName1); //gets user with userName1
-
-        if(hasUser(userOne) && hasUser(userTwo)) //Only adds the edge if both users exist
-        {
+        userTwo = getUser(userName1);
+        if(hasUser(userName) && hasUser(userName1)) //Only adds the edge if both users exist
+        { 
             userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for VertexOne
             followCount++;
         }
@@ -262,11 +261,12 @@ public class DSAGraph
         {
             User curUser = (User)iter.next(); //The next thing found is a user
             DSALinkedList mainFollowList = curUser.getFollows();
-            Iterator mainFollowIter = list.iterator();
+            Iterator mainFollowIter = mainFollowList.iterator();
             while(mainFollowIter.hasNext())
             {
                 User followingUser = (User)mainFollowIter.next(); 
-                DSALinkedList followingPostIter = followingUser.getPosts();
+                DSALinkedList followingPosts = followingUser.getPosts();
+                Iterator followingPostIter = followingPosts.iterator();
                 while(followingPostIter.hasNext())
                 {
                     Post curPost = (Post)followingPostIter.next(); 
@@ -275,8 +275,6 @@ public class DSAGraph
                         curPost.addLike(curUser);
                     }
                 }
-
-                
             } 
         } 
         if(Math.random() >= followProb)

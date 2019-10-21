@@ -96,7 +96,7 @@ public class UserInterface
 					//Statistics
 					break;
 				case 12: //Run update/time-step
-					graph.timeStep(likeProb, followProb);
+					/* graph.timeStep(likeProb, followProb); */
 					break;
 				case 13:
 					//Save to file
