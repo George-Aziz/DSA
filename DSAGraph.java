@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 public class DSAGraph
 {
@@ -32,8 +33,12 @@ public class DSAGraph
 
         userOne = getUser(userName); //gets user with userName
         userTwo = getUser(userName1); //gets user with userName1
-        userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for VertexOne
-        followCount++;
+
+        if(hasUser(userOne) && hasUser(userTwo)) //Only adds the edge if both users exist
+        {
+            userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for VertexOne
+            followCount++;
+        }
     }
 
     public void addLike(Object userName, Object userName1, Object postData)
@@ -63,7 +68,7 @@ public class DSAGraph
         {
             foundPost.addLike(liker);
         }
-    } 
+    }  
 
     public void removeUser(Object userName)
     {
@@ -244,6 +249,46 @@ public class DSAGraph
         }
     }
 
+    /*******************************************************************************
+    * SUBMODULE: timeStep()
+    * IMPORTS: likeProb (Real), followProb (Real)
+    * EXPORTS: none
+    * ASSERTION: An update for the graph with imported liking/following probabilities
+    * ******************************************************************************/
+    public void timeStep(double likeProb, double followProb)
+    {
+        Iterator iter = users.iterator();
+        while(iter.hasNext()) //Go through every user in the main linked list
+        {
+            User curUser = (User)iter.next(); //The next thing found is a user
+            DSALinkedList mainFollowList = curUser.getFollows();
+            Iterator mainFollowIter = list.iterator();
+            while(mainFollowIter.hasNext())
+            {
+                User followingUser = (User)mainFollowIter.next(); 
+                DSALinkedList followingPostIter = followingUser.getPosts();
+                while(followingPostIter.hasNext())
+                {
+                    Post curPost = (Post)followingPostIter.next(); 
+                    if(Math.random() >= likeProb)
+                    {
+                        curPost.addLike(curUser);
+                    }
+                }
+
+                
+            } 
+        } 
+        if(Math.random() >= followProb)
+        {
+
+            if(Math.random() >= likeProb)
+            {
+
+            }
+        }
+    }
+
     /***********************************************************************
     * PRIVATE INNER CLASS: User
     * Class for a user which is a person/user in the social network
@@ -293,7 +338,7 @@ public class DSAGraph
 
 
     /***********************************************************************
-    * PRIVATE INNER CLASS: User
+    * PRIVATE INNER CLASS: Post
     * Class for a user which is a person/user in the social network
     * **********************************************************************/
     public class Post 

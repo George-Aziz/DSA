@@ -35,6 +35,8 @@ public class UserInterface
     *************************************************************/
 	public void mainMenu()
 	{
+		double likeProb = -1;
+		double followProb = -1; //Variables for probabilities to be used in time-step
         int option = 0; //Option by default is invalid so the menu keeps looping
 		do
 		{
@@ -66,7 +68,8 @@ public class UserInterface
 					loadFile(graph, fileMgr); 
 				break;
 				case 3:
-					//probabilites
+					followProb = inputDouble("Please input the probability of following (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
+					likeProb = inputDouble("Please input the probability of liking (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 				break;	
 				case 4:
 					insertNewUser(graph);
@@ -92,8 +95,8 @@ public class UserInterface
 				case 11:
 					//Statistics
 					break;
-				case 12:
-					//Time-step
+				case 12: //Run update/time-step
+					graph.timeStep(likeProb, followProb);
 					break;
 				case 13:
 					//Save to file
