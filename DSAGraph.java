@@ -96,7 +96,8 @@ public class DSAGraph
         if (getUser(userName) != null)
         {
             userOne = getUser(userName); //gets user with userName
-            Post newPost = new Post(postData);
+            String name = userOne.getUserName();
+            Post newPost = new Post(postData, name);
             userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
         }
     }
@@ -170,7 +171,7 @@ public class DSAGraph
         while(postsIter.hasNext()) //Second iterator to find follows for each user
         {
             Post postData = (Post)postsIter.next();
-            System.out.print(postData.getPost()); //The userName of the user in the follows LinkedList
+            System.out.print(postData.getPostData()); //The userName of the user in the follows LinkedList
             if(postsIter.hasNext())
             {
                 System.out.print("\n"); // add a comma after each userName in the list
@@ -210,6 +211,30 @@ public class DSAGraph
         {
             User iterVertex = (User)iter.next();
             if(iterVertex.getUserName() == userName2) //If the userName of user one is equal to userName2 which is another user then isFollowing
+            {
+                state = true;
+            }
+        }
+        return state;//Boolean True/False
+    }
+
+    public boolean isLiking(Object userName1, Object userName2, Object inPost)
+    {
+        boolean state = false; //By default the state is false
+
+        User userOne; //User Two is the person getting checked for in the likes
+        Post post; //Post by userOne
+
+        userOne = getUser(userName1); //userName1 is the person with the post
+        post = (Post)inPost;
+
+        DSALinkedList likes = post.getLikes();
+        Iterator iter = likes.iterator();
+
+        while (iter.hasNext())
+        {
+            User iterUser = (User)iter.next();
+            if(iterUser.getUserName() == userName2) //If the userName of user one is equal to userName2 which is another user then isFollowing
             {
                 state = true;
             }
@@ -341,29 +366,43 @@ public class DSAGraph
     * **********************************************************************/
     public class Post 
     {
+        private String poster;
         private String postData;
         private int likeCount;
         private DSALinkedList likes;
         
-        public Post (String inPostData)
+        public Post (String inPostData, String inPoster)
         {
             likes = new DSALinkedList();
+            poster = inPoster;
             postData = inPostData;
             likeCount = 0;
         }
 
-        public void addLike(User userName)
+        public void addLike(User user)
         {
-            this.likes.insertLast(userName);
-            likeCount++;
+            if (!(isLiking(this.getPoster(), user.getUserName(), this))) //Ensuring a person can only like a post once
+            {
+                this.likes.insertLast(user);
+                likeCount++;
+            }
         }
 
+        public String getPoster()
+        {
+            return this.poster;
+        }
         public int getLikeCount()
         {
             return this.likeCount;
         }
 
-        public String getPost()
+        public DSALinkedList getLikes()
+        {
+            return this.likes;
+        }
+
+        public String getPostData()
         {
             return this.postData;
         }
@@ -373,4 +412,3 @@ in User have Post posts
 where if u wanna retrieve posts u access the post class and get the list from it */
 }
 
-// Find the user then find the post, once found add userTwo who wants to like the post to by incrementing likeCount
