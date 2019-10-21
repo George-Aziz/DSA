@@ -84,20 +84,20 @@ public class FileManager
 		
 		if (lineArray.length == 1) // If only one element on a line means name input
 		{
-			graph.addUser(lineArray[0]);//Value could be anything, I just do 1 as a placeholder value
+			graph.addUser(lineArray[0].trim());//Value could be anything, I just do 1 as a placeholder value
 		}
 		
 		if (lineArray.length == 2)
 		{
 			if(lineArray[0].equals("A"))
 			{
-				graph.addUser(lineArray[1]);
+				graph.addUser(lineArray[1].trim());
 			}
 			else
 			{
-				if(graph.hasUser(lineArray[0]) && graph.hasUser(lineArray[1]))
+				if(graph.hasUser(lineArray[0].trim()) && graph.hasUser(lineArray[1].trim()))
 				{
-					graph.addFollow(lineArray[1], lineArray[0]); //Makes the person follow the other person to the right of the :
+					graph.addFollow(lineArray[1].trim(), lineArray[0].trim()); //Makes the person follow the other person to the right of the :
 				}
 			}
 		}
@@ -106,12 +106,12 @@ public class FileManager
 		{
 			if (lineArray[0].equals("F")) //Means that a follow event will be added
 			{
-				graph.addFollow(lineArray[2], lineArray[1]); 
+				graph.addFollow(lineArray[2].trim(), lineArray[1].trim()); 
 			}
 
 			if (lineArray[0].equals("P")) //Means that a post event will be added
 			{
-				graph.addPost(lineArray[1], lineArray[2]);		
+				graph.addPost(lineArray[1].trim(), lineArray[2].trim());		
 			}
 		}
 	}

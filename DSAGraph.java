@@ -319,7 +319,6 @@ public class DSAGraph
         }
 
         Iterator usersIter = users.iterator();
-        
         while(usersIter.hasNext()) //Goes through the all the users from main list
         {
             User userOne = (User)usersIter.next(); 
