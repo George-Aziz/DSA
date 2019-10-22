@@ -4,18 +4,23 @@ import java.lang.Math;
 
 public class DSAGraph
 {
-    //private classfields
+    //PRIVATE CLASSFIELDS
     private DSALinkedList users;
     private int userCount;
-    private int followCount;
 
+    //Default Constructor
     public DSAGraph()
     {
         users = new DSALinkedList();
         userCount = 0;
-        followCount = 0;
     }
 
+    /*******************************************************
+    * SUBMODULE: addUser()
+    * IMPORTS: userName (Object)
+    * EXPORTS: none
+    * ASSERTION: adds a new user to the network
+    * ******************************************************/
     public void addUser(String userName)
     {
         User user = new User(userName); //Creates new user which contains userName
@@ -27,27 +32,58 @@ public class DSAGraph
         }
     }
 
-    public void addFollow (Object userName, Object userName1) //Directed edges
+    /*******************************************************
+    * SUBMODULE: addFollow()
+    * IMPORTS: userName (Object), userName1 (Object)
+    * EXPORTS: none
+    * ASSERTION: adds a follow from one user to another
+    * ******************************************************/
+    public void addFollow (Object userName1, Object userName2) //Directed edges
     {
         User userOne, userTwo;
 
-        userOne = getUser(userName); //gets user with userName
-        userTwo = getUser(userName1);
-        if(hasUser(userName) && hasUser(userName1) && (!userOne.equals(userTwo))) //Only adds the edge if both users exist
+        userOne = getUser(userName1); //gets user with userName
+        userTwo = getUser(userName2);
+        if(hasUser(userName1) && hasUser(userName2) && (!userOne.equals(userTwo))) //Only adds the edge if both users exist
         {  
-            userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for VertexOne
-            followCount++;
+            userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for UserOne
+            userTwo.addFollower(userOne); //Adds userOne into linked list of followers for userTwo
         } 
     }
 
-    public void addLike(Object userName, Object userName1, Object postData)
+    /*********************************************************
+    * SUBMODULE: addPost()
+    * IMPORTS: userName (Object), postData (String)
+    * EXPORTS: none
+    * ASSERTION: adds a post for a specefied user
+    * ********************************************************/
+    public void addPost (Object userName, String postData)
+    {
+        User userOne;
+        if (getUser(userName) != null)
+        {
+            userOne = getUser(userName); //gets user with userName
+            String name = userOne.getUserName();
+            Post newPost = new Post(postData, name);
+            userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
+            System.out.println(name + " has added a new post!");
+        }
+    }
+
+    /*******************************************************************************************
+    * SUBMODULE: addLike()
+    * IMPORTS: userName (Object), userName1 (Object), postData (Object)
+    * EXPORTS: none
+    * ASSERTION: adds a userName like to userName1's post
+    * *******************************************************************************************/
+    public void addLike(Object userName1, Object userName2, Object postData)
     {
         User liker, poster;
         Post curPost, likePost, foundPost;
         foundPost = null;
 
-        liker = getUser(userName);
-        poster = getUser(userName1);
+        liker = getUser(userName1);
+        poster = getUser(userName2);
 
         likePost = (Post)postData;
 
@@ -67,8 +103,14 @@ public class DSAGraph
         {
             foundPost.addLike(liker);
         }
-    }  
+    }
 
+    /*******************************************************************************************
+    * SUBMODULE: removeUser()
+    * IMPORTS: userName (Object)
+    * EXPORTS: none
+    * ASSERTION: Removes User from the whole network including followers,following and likes list
+    * *******************************************************************************************/
     public void removeUser(Object userName)
     {
         User user = getUser(userName);
@@ -77,34 +119,87 @@ public class DSAGraph
         while(iter.hasNext()) //First iterator to find the user
         {
             User curUser = (User)iter.next(); //The next thing found is a user
-            DSALinkedList list = curUser.getFollows();
+            DSALinkedList list = curUser.getFollows(); //Gets who the person follows
+            DSALinkedList followersList = curUser.getFollowers(); //Gets the person's followers
             list.removeNode(user);
+            followersList.removeNode(user);
+            curUser.remFollowerCount();
+            curUser.remFollowCount();
+
+            DSALinkedList posts = curUser.getPosts(); //Gets all the posts from the user
+            Iterator postsIter = posts.iterator();
+            while(postsIter.hasNext()) //Second iterator to find follows for each user
+            {
+                Post postData = (Post)postsIter.next();
+                DSALinkedList likeList = postData.getLikes();
+                likeList.removeNode(user); 
+                postData.remUserLikeCount();
+            }
+            userCount--; //For stats, Overcall user count in the social network
         } 
         System.out.println(user.getUserName() + " has deleted their account!");
     }
 
+    /*********************************************************
+    * SUBMODULE: removeFollow()
+    * IMPORTS: follower (Object), following (Object)
+    * EXPORTS: none
+    * ASSERTION: Removes a follow from the follower 
+    * ********************************************************/
     public void removeFollow(Object follower, Object following )
     {
         User followerUser = getUser(follower);
         User followingUser = getUser(following);
         DSALinkedList list = followerUser.getFollows();
         list.removeNode(followingUser);
+
+        DSALinkedList followersList = followingUser.getFollowers();
+        followersList.removeNode(followerUser);
+        followerUser.remFollowerCount();
+        followerUser.remFollowCount();
+
+        DSALinkedList posts = followingUser.getPosts(); //Gets all the posts from the user
+        Iterator postsIter = posts.iterator();
+
+        while(postsIter.hasNext()) //Second iterator to find follows for each user
+        {
+            Post postData = (Post)postsIter.next();
+            DSALinkedList likeList = postData.getLikes();
+            likeList.removeNode(followerUser); 
+            postData.remUserLikeCount();
+        }
         System.out.println(followerUser.getUserName() + " has unfollowed " + followingUser.getUserName() +"!");
     }
 
-    public void addPost (Object userName, String postData)
+
+    /*************************************************
+    * SUBMODULE: getUser()
+    * IMPORTS: userName (Object)
+    * EXPORTS: newUser (User)
+    * ASSERTION: gets the User with the current name
+    * ***********************************************/
+    public User getUser(Object userName)
     {
-        User userOne;
-        if (getUser(userName) != null)
+        Iterator iter = users.iterator();
+        User newUser = null; //the new user is set as null at the start since no user has been found
+
+        while(iter.hasNext()) //While there is still another user 
         {
-            userOne = getUser(userName); //gets user with userName
-            String name = userOne.getUserName();
-            Post newPost = new Post(postData, name);
-            userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
-            System.out.println(name + " has added a new post!");
+            User user = (User)iter.next(); //Typecast the object returned by iterator to User 
+            if (userName.equals(user.getUserName())) //If the imported userName is the same as the newly found in iterator userName
+            {
+                newUser = user; //The new user is the user that matches the same userName
+            }
         }
+        return newUser; //Returns the user 
     }
 
+    /*********************************************************
+    * SUBMODULE: hasUser()
+    * IMPORTS: userName (Object)
+    * EXPORTS: found (boolean)
+    * ASSERTION: Checks if a user exists
+    * ********************************************************/
     public boolean hasUser(Object userName)
     {
         boolean found = false;
@@ -123,81 +218,16 @@ public class DSAGraph
         }
         return found;
     }
-
+    
+    /*********************************************************
+    * SUBMODULE: getUserCount()
+    * IMPORTS: none
+    * EXPORTS: userCount (Integer)
+    * ASSERTION: gets the overall UserCount for social network
+    * ********************************************************/
     public int getuserCount()
     {
         return userCount;
-    }
-
-    public int getEdgeCount()
-    {
-        return followCount;
-    }
-
-    public User getUser(Object userName)
-    {
-        Iterator iter = users.iterator();
-        User newUser = null; //the new user is set as null at the start since no user has been found
-
-        while(iter.hasNext()) //While there is still another user 
-        {
-            User user = (User)iter.next(); //Typecast the object returned by iterator to User 
-            if (userName.equals(user.getUserName())) //If the imported userName is the same as the newly found in iterator userName
-            {
-                newUser = user; //The new user is the user that matches the same userName
-            }
-        }
-        return newUser; //Returns the user 
-    }
-
-    public void displayUserInfo(Object userName)
-    {
-        User curUser = getUser(userName);
-        DSALinkedList list = curUser.getFollows(); //List of follows for current user
-        Iterator linkIter = list.iterator();
-        System.out.println("\n--==" + userName + " Info==--"); 
-        System.out.print("\nFollows: ");
-        while(linkIter.hasNext()) //Second iterator to find follows for each user
-        {
-            User following = (User)linkIter.next();
-            System.out.print(following.getUserName()); //The userName of the user in the follows LinkedList
-            if(linkIter.hasNext())
-            {
-                System.out.print(", "); // add a comma after each userName in the list
-            }
-        }
-        System.out.print("\n");
-
-        DSALinkedList posts = curUser.getPosts(); //Gets all the posts from the user
-        Iterator postsIter = posts.iterator();
-        System.out.print("\nPosts:\n");
-        while(postsIter.hasNext()) //Second iterator to find follows for each user
-        {
-            Post postData = (Post)postsIter.next();
-            System.out.print(postData.getPostData() + postData.getLikeCount()); //The userName of the user in the follows LinkedList
-            DSALinkedList likeList = postData.getLikes();
-            Iterator likesIter = likeList.iterator();
-            while(likesIter.hasNext())
-            {
-                User liker = (User)likesIter.next();
-                System.out.print(liker.getUserName() + ",");
-            }
-            if(postsIter.hasNext())
-            {
-                System.out.print("\n"); // add a comma after each userName in the list
-            }
-        }
-        System.out.print("\n");
-    }
-    
-    public DSALinkedList getFollows(Object userName)
-    {
-        return getUser(userName).getFollows(); 
-    }
-
-    public DSALinkedList getPosts(Object userName)
-    {
-        return getUser(userName).getPosts(); 
     }
 
     /***********************************************************************
@@ -209,9 +239,7 @@ public class DSAGraph
     public boolean isFollowing(Object userName1, Object userName2)
     {
         boolean state = false; //By default the state is false
-
         User userOne;
-
         userOne = getUser(userName1); //get user that has userName1
 
         DSALinkedList follows = userOne.getFollows();
@@ -219,8 +247,8 @@ public class DSAGraph
 
         while (iter.hasNext())
         {
-            User iterVertex = (User)iter.next();
-            if(iterVertex.getUserName() == userName2) //If the userName of user one is equal to userName2 which is another user then isFollowing
+            User iterUser = (User)iter.next();
+            if(iterUser.getUserName() == userName2) //If the userName of user one is equal to userName2 which is another user then isFollowing
             {
                 state = true;
             }
@@ -228,6 +256,31 @@ public class DSAGraph
         return state;//Boolean True/False
     }
 
+    /***********************************************************************
+    * SUBMODULE: isFollower()
+    * IMPORTS: userName1 (Object), userName2 (Object)
+    * EXPORTS: state (boolean)
+    * ASSERTION: Checks if userName 2 is in userOne's followers list
+    * **********************************************************************/
+    public boolean isFollower(Object userName1, Object userName2)
+    {
+        boolean state = false; //By default the state is false
+        User userOne;
+        userOne = getUser(userName1); //get user that has userName1
+
+        DSALinkedList followers = userOne.getFollowers();
+        Iterator iter = followers.iterator();
+
+        while (iter.hasNext())
+        {
+            User iterUser = (User)iter.next();
+            if(iterUser.getUserName() == userName2) //If userOne's followers has userName 2 then userName 2 already following
+            {
+                state = true;
+            }
+        }
+        return state;//Boolean True/False
+    }
 
     /***********************************************************************
     * SUBMODULE: isLiking()
@@ -238,9 +291,7 @@ public class DSAGraph
     public boolean isLiking(Object userName1, Object userName2, Post post)
     {
         boolean state = false; //By default the state is false
-
         User userOne; //User Two is the person getting checked for in the likes
-    
         userOne = getUser(userName1); //userName1 is the person with the post
 
         DSALinkedList likes = post.getLikes();
@@ -257,6 +308,69 @@ public class DSAGraph
         return state;//Boolean True/False
     }
 
+    /************************************************************************************************
+    * SUBMODULE: displayUserInfo()
+    * IMPORTS: userName (Object)
+    * EXPORTS: none
+    * ASSERTION: Displays user's info including Follows, Followers and Posts with who liked each post
+    * ***********************************************************************************************/
+    public void displayUserInfo(Object userName)
+    {
+        User mainUser = getUser(userName); //Main user that will be displayed
+
+        DSALinkedList list = mainUser.getFollows(); //List of follows for the main user
+        Iterator followIter = list.iterator();
+        System.out.println("\n--==" + userName + " Info==--"); //Main user's Info displayed starts here
+        System.out.print("\n" + mainUser.getFollowCount() + " Follows: "); 
+        while(followIter.hasNext()) //Iterator to go over who mainUser follows
+        {
+            User following = (User)followIter.next();
+            System.out.print(following.getUserName()); //The userName of the user in the follows LinkedList
+            if(followIter.hasNext()) //Only if there is another element/person after
+            {
+                System.out.print(", "); // add a comma after each userName in the list
+            }
+        }
+
+        DSALinkedList followersList = mainUser.getFollowers(); //List of followers of the main user
+        Iterator followersIter = followersList.iterator();
+        System.out.print("\n\n" + mainUser.getFollowersCount() + " Followers: ");
+        while(followersIter.hasNext()) //Second iterator to find followers for mainUser
+        {
+            User follower = (User)followersIter.next();
+            System.out.print(follower.getUserName()); //The userName of the user in the followers LinkedList
+            if(followersIter.hasNext())
+            {
+                System.out.print(", "); // add a comma after each userName in the list
+            }
+        }
+
+        DSALinkedList posts = mainUser.getPosts(); //Gets all the posts from the main user
+        Iterator postsIter = posts.iterator();
+        System.out.print("\n\nPosts:\n");
+        while(postsIter.hasNext()) //Third iterator for the posts of the main user
+        {
+            Post curPost = (Post)postsIter.next(); 
+            System.out.print("\n" + curPost.getPostData() + "\n"); //Gets whatever the post contains as a String
+            DSALinkedList likeList = curPost.getLikes(); //Gets the likes of the curPost
+            Iterator likesIter = likeList.iterator();
+            System.out.print(curPost.getLikeCount() + " Likers: "); //Gets like count and displays each person
+            while(likesIter.hasNext())
+            {
+                User liker = (User)likesIter.next(); //The liker is a user
+                System.out.print(liker.getUserName()); //Prints the name of the user who liked the post
+                if(likesIter.hasNext())
+                {
+                    System.out.print(", ");
+                }
+            }
+            if(postsIter.hasNext()) //After one post is complete
+            {
+                System.out.print("\n"); // add a comma after each userName in the list
+            }
+        }
+        System.out.print("\n");
+    }
 
     /***********************************************************************
     * SUBMODULE: displayAsList()
@@ -267,7 +381,7 @@ public class DSAGraph
     public void displayAsList()
     {
         Iterator iter = users.iterator();
-        System.out.println("\nCURRENT NETWORK STATUS:\n"); //Current user to indicate all follows related to this user
+        System.out.println("\nCURRENT NETWORK STATUS:\n"); //Current network status
         while(iter.hasNext()) //First iterator to find the user
         {
             User user = (User)iter.next(); //The next thing found is a user
@@ -335,40 +449,6 @@ public class DSAGraph
                 }
             }
         }
-
-       /*  Iterator usersIter = users.iterator();
-        while(usersIter.hasNext()) //Goes through the all the users from main list
-        {
-            User userOne = (User)usersIter.next(); 
-            Iterator usersIterTwo = users.iterator(); //Iterator for the edges of the main vertex
-
-            while(usersIterTwo.hasNext()) //Goes through all the users from main list again
-            {
-                User userTwo = (User)usersIterTwo.next();
-                if (isFollowing(userOne.getUserName(), userTwo.getUserName()))
-                {
-                    DSALinkedList userTwoList = userTwo.getFollows();
-                    Iterator followerIter = userTwoList.iterator(); //Goes through the following list of the second userIterator
-                    while(followerIter.hasNext())
-                    {
-                        User userThree = (User)followerIter.next(); //Gets the users from the following list
-                        DSALinkedList posts = userThree.getPosts(); //Gets the post of the third user who User2->User3
-                        Iterator postIter = posts.iterator();
-                        while(postIter.hasNext())
-                        {
-                            Post curPost = (Post)postIter.next(); 
-                            if(isLiking(userThree.getUserName(), userTwo.getUserName(), curPost) && isFollowing(userOne.getUserName(), userTwo.getUserName()))
-                            { 
-                                if(Math.random() <= followProb)
-                                {
-                                    addFollow(userOne.getUserName(),userThree.getUserName());
-                                }
-                            } 
-                        }
-                    }
-                }
-            }
-        } */
     }
 
     /***********************************************************************
@@ -379,14 +459,20 @@ public class DSAGraph
     {
         //Private Classfields
         private String userName; //Name of person
+        private int followerCount;
+        private int followCount;
         private DSALinkedList follows; //List with all the users current user following
+        private DSALinkedList followers; //List with all the users following current user
         private DSALinkedList posts; //List of all posts that current user has put out
 
         public User (String inUserName)
         {
             follows = new DSALinkedList();
+            followers = new DSALinkedList();
             posts = new DSALinkedList();
             userName = inUserName;
+            followCount = 0;
+            followerCount = 0;
         }
 
         public String getUserName()
@@ -399,17 +485,33 @@ public class DSAGraph
             return this.follows; //returns the linked lists that contains the follows to other users 
         }
 
+        public DSALinkedList getFollowers()
+        {
+            return this.followers;
+        }
+
         public void addFollow(User user)
         {
             if (!(isFollowing(this.getUserName(), user.getUserName()))) //Ensuring a person can only follow a person once
             {
                 this.follows.insertLast(user); //Adds edge by adding the user to the list of follows for selected user
                 System.out.println(this.getUserName() + " is now following " + user.getUserName() + "!");
+                followCount++;
+            }
+        }
+
+        public void addFollower(User user)
+        {
+            if (!(isFollower(this.getUserName(), user.getUserName())))
+            {
+                this.followers.insertLast(user);
+                followerCount++;
             }
         }
 
         public void addPost(Post newPost)
         {
+            
             this.posts.insertLast(newPost);
         }
 
@@ -417,13 +519,34 @@ public class DSAGraph
         {
             return this.posts; //returns the linked lists that contains the follows to other users 
         }
+
+        public int getFollowersCount()
+        {
+            return this.followerCount;
+        }
+
+        public int getFollowCount()
+        {
+            return this.followCount;
+        }
+
+        
+        public void remFollowerCount()
+        {
+            followerCount--;
+        }
+
+        public void remFollowCount()
+        {
+            followCount--;
+        }
     }
 
 
-    /***********************************************************************
+    /*****************************************************************************************************
     * PRIVATE INNER CLASS: Post
-    * Class for a user which is a person/user in the social network
-    * **********************************************************************/
+    * Class for a Post which stores all info for each post and is stored in a LinkedList within User Class
+    * ****************************************************************************************************/
     public class Post 
     {
         private String poster;
@@ -466,9 +589,13 @@ public class DSAGraph
         {
             return this.postData;
         }
+
+        public void remUserLikeCount()
+        {
+            likeCount--;
+        }
     }
 /* Post class
 in User have Post posts
 where if u wanna retrieve posts u access the post class and get the list from it */
 }
-
