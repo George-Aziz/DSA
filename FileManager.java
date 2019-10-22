@@ -115,12 +115,20 @@ public class FileManager
 
 			if (lineArray[0].equals("P")) //Means that a post event will be added
 			{
-				graph.addPost(lineArray[1].trim(), lineArray[2].trim());		
+				graph.addPost(lineArray[1].trim(), lineArray[2].trim(), 1);		
 			}
 
 			if (lineArray[0].equals("U")) //Means that a post event will be added
 			{
 				graph.removeFollow(lineArray[2].trim(), lineArray[1].trim());		
+			}
+		}
+
+		if (lineArray.length == 4) //Means a post with a clickbait factor
+		{
+			if (lineArray[0].equals("P")) //Means that a post event will be added 
+			{
+				graph.addPost(lineArray[1].trim(), lineArray[2].trim(), Integer.parseInt(lineArray[3].trim()));
 			}
 		}
 	}

@@ -174,13 +174,12 @@ public class UserInterface
 	public void insertPostManual(DSAGraph graph)
 	{	
 		String user, post;
+		double clickBait;
 		
-		//User input for commission year
 		user = inputUser("\nPlease input the name of the user that wants to add a post:", "ERROR: User not found!"); 
-		
 		post = inputPost("\nPlease input what the user will post:", "ERROR: Cannot have empty post!");
-
-		graph.addPost(user, post);
+		clickBait = inputClickBait("Please input the click bait factor (Above 0 Only!):","ERROR: Please select a number above 0 (Can be decimals)", 0);
+		graph.addPost(user, post, clickBait);
 	}
 
 
@@ -403,5 +402,35 @@ public class UserInterface
 		}
 		while ((inputPost == null) || (inputPost.isEmpty()));
 		return inputPost;
+	}
+
+	/********************************************************************************
+	SUBMODULE: inputClickBait
+	IMPORT: prompt (String), error (String), min (Real), max (Real)
+	EXPORT: doubleInput (Real)
+	ASSERTION: User input submodule to input a click bait factor above 0 
+	*********************************************************************************/
+	public double inputClickBait(String prompt, String error, double min) //No max needed for click bait
+	{
+		Scanner sc = new Scanner(System.in);
+		String outputString;
+		double doubleInput = min - 1.0; //By default the input is always invalid to ensure loop keeps looping even if nothing is inputted
+		outputString = prompt; //The output is set to the prompt that is imported when submodule is called       
+		
+		do
+		{
+			try
+			{
+				System.out.println(outputString); //Outputs the prompt for the user
+				outputString = error + "\n" + prompt; //Makes the output prompt include the error if input is invalid
+				doubleInput = sc.nextDouble(); //User inputs a double
+			}
+			catch (InputMismatchException e)
+			{
+				sc.nextLine(); //advances scanner to the next line
+			}
+		}
+		while (doubleInput < min); //Validation boundaries for double that get imported
+		return doubleInput;
 	}
 }

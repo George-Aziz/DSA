@@ -57,14 +57,14 @@ public class DSAGraph
     * EXPORTS: none
     * ASSERTION: adds a post for a specefied user
     * ********************************************************/
-    public void addPost (Object userName, String postData)
+    public void addPost (Object userName, String postData, double clickBait)
     {
         User userOne;
         if (getUser(userName) != null)
         {
             userOne = getUser(userName); //gets user with userName
             String name = userOne.getUserName();
-            Post newPost = new Post(postData, name);
+            Post newPost = new Post(postData, name, clickBait);
             userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
             System.out.println(name + " has added a new post!");
         }
@@ -121,10 +121,13 @@ public class DSAGraph
             User curUser = (User)iter.next(); //The next thing found is a user
             DSALinkedList list = curUser.getFollows(); //Gets who the person follows
             DSALinkedList followersList = curUser.getFollowers(); //Gets the person's followers
-            list.removeNode(user);
-            followersList.removeNode(user);
-            curUser.remFollowerCount();
-            curUser.remFollowCount();
+            if (isFollowing(curUser.getUserName(), user.getUserName()) && isFollower(curUser.getUserName(), user.getUserName()))
+            {
+                list.removeNode(user);
+                followersList.removeNode(user);
+                curUser.remFollowerCount();
+                curUser.remFollowCount();
+            }
 
             DSALinkedList posts = curUser.getPosts(); //Gets all the posts from the user
             Iterator postsIter = posts.iterator();
@@ -132,8 +135,11 @@ public class DSAGraph
             {
                 Post postData = (Post)postsIter.next();
                 DSALinkedList likeList = postData.getLikes();
-                likeList.removeNode(user); 
-                postData.remUserLikeCount();
+                if(isLiking(curUser.getUserName(),user.getUserName(),postData))
+                {
+                    likeList.removeNode(user); 
+                    postData.remUserLikeCount();
+                }
             }
             userCount--; //For stats, Overcall user count in the social network
         } 
@@ -151,12 +157,15 @@ public class DSAGraph
         User followerUser = getUser(follower);
         User followingUser = getUser(following);
         DSALinkedList list = followerUser.getFollows();
-        list.removeNode(followingUser);
 
         DSALinkedList followersList = followingUser.getFollowers();
-        followersList.removeNode(followerUser);
-        followerUser.remFollowerCount();
-        followerUser.remFollowCount();
+        if (isFollowing(followingUser.getUserName(), followerUser.getUserName()) && isFollower(followingUser.getUserName(), followerUser.getUserName()))
+        {
+            list.removeNode(followingUser); //Unfollows the following user
+            followersList.removeNode(followerUser); //Removes the follower from the followers list of the following User
+            followingUser.remFollowerCount(); //Decrements the follower count by 1 since the user is no longer following the person
+            followerUser.remFollowCount(); //Decrements the follow count of the user who was following
+        }
 
         DSALinkedList posts = followingUser.getPosts(); //Gets all the posts from the user
         Iterator postsIter = posts.iterator();
@@ -165,8 +174,11 @@ public class DSAGraph
         {
             Post postData = (Post)postsIter.next();
             DSALinkedList likeList = postData.getLikes();
-            likeList.removeNode(followerUser); 
-            postData.remUserLikeCount();
+            if(isLiking(followingUser.getUserName(),followerUser.getUserName(),postData))
+            {
+                likeList.removeNode(followerUser); 
+                postData.remUserLikeCount();
+            }
         }
         System.out.println(followerUser.getUserName() + " has unfollowed " + followingUser.getUserName() +"!");
     }
@@ -432,7 +444,13 @@ public class DSAGraph
                     while(postIter.hasNext())
                     {
                         Post curPost = (Post)postIter.next(); //Gets the post of the userThree
-                        if(Math.random() <= likeProb) 
+                        double cbFactor = curPost.getClickBait(); //Click bait factor
+                        double newProb = likeProb*cbFactor;
+                        if(newProb >= 1.0)
+                        {
+                            newProb = 1.0;
+                        }
+                        if(Math.random() <= newProb) 
                         {
                             curPost.addLike(userTwo); //Adds a like to the post if probability is met
                         }
@@ -552,14 +570,16 @@ public class DSAGraph
         private String poster;
         private String postData;
         private int likeCount;
+        private double clickBait;
         private DSALinkedList likes;
         
-        public Post (String inPostData, String inPoster)
+        public Post (String inPostData, String inPoster, double inClickBait)
         {
             likes = new DSALinkedList();
             poster = inPoster;
             postData = inPostData;
             likeCount = 0;
+            clickBait = inClickBait;
         }
 
         public void addLike(User user)
@@ -583,6 +603,11 @@ public class DSAGraph
         public DSALinkedList getLikes()
         {
             return this.likes;
+        }
+
+        public double getClickBait()
+        {
+            return this.clickBait;
         }
 
         public String getPostData()
