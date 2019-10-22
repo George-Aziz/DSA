@@ -134,14 +134,13 @@ public class FileManager
 	}
 
 	/*****************************************************************
-	SUBMODULE: writeFile
+	SUBMODULE: saveNetwork
 	IMPORT: fileName (String), graph (DSAGraph)
 	EXPORT: none
 	ASSERTION: To be able to write the report of the sim to a file
     *******************************************************************/
-	/* public void writeFile(String fileName, DSAGraph graph)
+	public void saveNetwork(String fileName, DSAGraph graph)
 	{
-
 		String message;
 		
 		FileOutputStream fileStrm = null;
@@ -151,13 +150,24 @@ public class FileManager
 		{
 			fileStrm = new FileOutputStream(fileName); 
 			pw = new PrintWriter(fileStrm);
-			
-			for (int fileIndex = 0; fileIndex < sStore.getShipCount(); fileIndex++) 
-			{
-				pw.println(shipArray[fileIndex].toFileString()); //Goes through each index of the array and adds the string created from toFileString method
-			}
+
+
+			DSAQueue userQueue = graph.exportUsers();
+			Iterator userIter = userQueue.iterator();
+			while (userIter.hasNext())
+            {
+                pw.println(userIter.next());
+            }
+
+			DSAQueue followQueue = graph.exportFollows();
+			Iterator followIter = followQueue.iterator();
+			while (followIter.hasNext())
+            {
+                pw.println(followIter.next());
+            }
+
 			pw.close(); //Writer must be closed
-			message = "Ships succesfully saved!";
+			message = "Network File succesfully saved!";
 			UserInterface.showMessage(message);
 		}
 		catch (IOException e)
@@ -175,5 +185,5 @@ public class FileManager
 			UserInterface.showMessage(message);
 		}
 		
-	}*/
+	}
 } 

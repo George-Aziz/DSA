@@ -99,7 +99,8 @@ public class UserInterface
 					graph.timeStep(likeProb, followProb);
 					break;
 				case 13:
-					//Save to file
+					saveNetwork(graph, fileMgr);
+					break;
 				case 14:
 					System.out.println("You have selected to exit. Good Bye"); //If the user wants to exit the program
 					break;
@@ -151,19 +152,19 @@ public class UserInterface
 		}
 	}
 	
-	/********************************************************************************
-	SUBMODULE: saveShips
+	/****************************************************************************************
+	SUBMODULE: saveNetwork
 	IMPORT: graph (DSAGraph), fileMgr (FileManager)
 	EXPORT: none
-	ASSERTION: When the user wants to save ships into a file
-	*********************************************************************************/
-	/* public void saveNetwork(DSAGraph graph, FileManager fileMgr)
+	ASSERTION: When the user wants to save the network to a file in its current state in .txt
+	*****************************************************************************************/
+	public void saveNetwork(DSAGraph graph, FileManager fileMgr)
 	{
 		System.out.println("\nNOTE: If you enter a file that already exists, it will overwrite the file!");
 		String fileName = getFileName();
 
-		fileMgr.writeFile(fileName, graph);
-	} */
+		fileMgr.saveNetwork(fileName, graph);
+	}
 	
 	/*****************************************************************************************
 	SUBMODULE: insertPostManual

@@ -469,6 +469,59 @@ public class DSAGraph
         }
     }
 
+    /****************************************************
+    * SUBMODULE: exportUsers()
+    * IMPORTS: none
+    * EXPORTS: queue (DSAqueue)
+    * ASSERTION: exports all users in network to a queue
+    * ***************************************************/
+    public DSAQueue exportUsers() //Exports a queue in order for file writing
+    {
+        DSAQueue queue = new DSAQueue();
+        User user;
+        Object userName;
+
+        Iterator iter = users.iterator();
+        while (iter.hasNext())
+        {
+            user = (User)iter.next();
+            userName = user.getUserName();
+            queue.enqueue(userName);
+        }
+
+        return queue;
+    }
+
+    /*************************************************************************************
+    * SUBMODULE: exportFollows()
+    * IMPORTS: none
+    * EXPORTS: queue (DSAqueue)
+    * ASSERTION: exports all follows in network to a queue in same format as a networkFile
+    * ************************************************************************************/
+    public DSAQueue exportFollows() //Exports a queue in order for file writing
+    {
+        DSAQueue queue = new DSAQueue();
+
+        Iterator iter = users.iterator();
+        while (iter.hasNext())
+        {
+            User user = (User)iter.next();
+            String followerName = user.getUserName();
+            DSALinkedList list = user.getFollows(); //List of follows for current user
+            Iterator linkIter = list.iterator(); 
+
+            while(linkIter.hasNext()) //Second iterator to find follows for each user
+            {
+                User followingUser = (User)linkIter.next();
+                String followingName = followingUser.getUserName();
+                queue.enqueue(followingName + ":" + followerName);
+            }
+        }
+
+        return queue;
+    }
+    
+
     /***********************************************************************
     * PRIVATE INNER CLASS: User
     * Class for a user which is a person/user in the social network
