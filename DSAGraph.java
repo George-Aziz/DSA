@@ -595,7 +595,4 @@ public class DSAGraph
             likeCount--;
         }
     }
-/* Post class
-in User have Post posts
-where if u wanna retrieve posts u access the post class and get the list from it */
 }

@@ -93,6 +93,10 @@ public class FileManager
 			{
 				graph.addUser(lineArray[1].trim());
 			}
+			else if (lineArray[0].equals("R"))
+			{
+				graph.removeUser(lineArray[1].trim());
+			}
 			else
 			{
 				if(graph.hasUser(lineArray[0].trim()) && graph.hasUser(lineArray[1].trim()))
@@ -112,6 +116,11 @@ public class FileManager
 			if (lineArray[0].equals("P")) //Means that a post event will be added
 			{
 				graph.addPost(lineArray[1].trim(), lineArray[2].trim());		
+			}
+
+			if (lineArray[0].equals("U")) //Means that a post event will be added
+			{
+				graph.removeFollow(lineArray[2].trim(), lineArray[1].trim());		
 			}
 		}
 	}
