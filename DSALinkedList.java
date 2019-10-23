@@ -167,6 +167,53 @@ public class DSALinkedList implements Iterable , Serializable
         }
     }
 
+ /*    public DSAQueue export() //Exports a queue in order for file writing or display
+    {
+        DSAQueue queue = new DSAQueue();
+        
+        DSAListNode node, nextNode;
+
+        node = head;
+        if (node == null)
+        {
+            throw new IllegalArgumentException("Node not found!");
+        }
+        else 
+        {
+            while(node != null) 
+            {
+                nextNode = node.getNext();
+                queue.enqueue(node.getValue());
+                node = nextNode;
+            }
+        }
+        return queue;
+    } */
+
+    /* public void display()
+    {
+        DSAListNode node, nextNode;
+
+        node = head;
+        if (node == null)
+        {
+            throw new IllegalArgumentException("Node not found!");
+        }
+        else 
+        {
+            while(node != null) 
+            {
+                nextNode = node.getNext();
+                System.out.print(node);
+                node = nextNode;
+                if(nextNode != null) //Only if there is another element/person after
+                {
+                    System.out.print(", "); // add a comma after each userName in the list
+                }
+            }
+        }
+    } */
+
     public Iterator iterator() //Return a new Iterator of internal type DSALinkedListIterator
     {
         return new DSALinkedListIterator(this); //Hooks the iterator to this DSALinkedList object

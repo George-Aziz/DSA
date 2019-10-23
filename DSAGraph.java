@@ -341,33 +341,15 @@ public class DSAGraph
     {
         User mainUser = getUser(userName); //Main user that will be displayed
 
-        DSALinkedList list = mainUser.getFollows(); //List of follows for the main user
-        Iterator followIter = list.iterator();
+        DSALinkedList followsList = mainUser.getFollows(); //List of follows for the main user
         System.out.println("\n--==" + userName + " Info==--"); //Main user's Info displayed starts here
-        System.out.print("\n" + mainUser.getFollowCount() + " Follows: "); 
-        while(followIter.hasNext()) //Iterator to go over who mainUser follows
-        {
-            User following = (User)followIter.next();
-            System.out.print(following.getUserName()); //The userName of the user in the follows LinkedList
-            if(followIter.hasNext()) //Only if there is another element/person after
-            {
-                System.out.print(", "); // add a comma after each userName in the list
-            }
-        }
+        System.out.print("\n" + mainUser.getFollowCount() + " Follows: ");
+        displayList(followsList);
 
         DSALinkedList followersList = mainUser.getFollowers(); //List of followers of the main user
-        Iterator followersIter = followersList.iterator();
         System.out.print("\n\n" + mainUser.getFollowersCount() + " Followers: ");
-        while(followersIter.hasNext()) //Second iterator to find followers for mainUser
-        {
-            User follower = (User)followersIter.next();
-            System.out.print(follower.getUserName()); //The userName of the user in the followers LinkedList
-            if(followersIter.hasNext())
-            {
-                System.out.print(", "); // add a comma after each userName in the list
-            }
-        }
-
+        displayList(followersList);
+        
         DSALinkedList posts = mainUser.getPosts(); //Gets all the posts from the main user
         Iterator postsIter = posts.iterator();
         System.out.print("\n\nPosts:\n");
@@ -376,17 +358,9 @@ public class DSAGraph
             Post curPost = (Post)postsIter.next(); 
             System.out.print("\n" + curPost.getPostData() + "\n"); //Gets whatever the post contains as a String
             DSALinkedList likeList = curPost.getLikes(); //Gets the likes of the curPost
-            Iterator likesIter = likeList.iterator();
             System.out.print(curPost.getLikeCount() + " Likers: "); //Gets like count and displays each person
-            while(likesIter.hasNext())
-            {
-                User liker = (User)likesIter.next(); //The liker is a user
-                System.out.print(liker.getUserName()); //Prints the name of the user who liked the post
-                if(likesIter.hasNext())
-                {
-                    System.out.print(", ");
-                }
-            }
+            displayList(likeList);
+    
             if(postsIter.hasNext()) //After one post is complete
             {
                 System.out.print("\n"); // add a comma after each userName in the list
@@ -410,17 +384,7 @@ public class DSAGraph
             User user = (User)iter.next(); //The next thing found is a user
             System.out.print(user.getUserName() +" follows: "); //Current user to indicate all follows related to this user
             DSALinkedList list = user.getFollows(); //List of follows for current user
-            Iterator linkIter = list.iterator(); 
-
-            while(linkIter.hasNext()) //Second iterator to find follows for each user
-            {
-                User following = (User)linkIter.next();
-                System.out.print(following.getUserName()); //The userName of the user in the follows LinkedList
-                if(linkIter.hasNext())
-                {
-                    System.out.print(", "); // add a comma after each userName in the list
-                }
-            }
+            displayList(list);
             System.out.print("\n"); //After one user is completely shown, move to a new line for the next one
         }
     }
@@ -501,6 +465,20 @@ public class DSAGraph
         }
 
         return queue;
+    }
+
+    public void displayList(DSALinkedList list)
+    {
+        Iterator iter = list.iterator();
+        while (iter.hasNext())
+        {
+            User user = (User)iter.next();
+            System.out.print(user.getUserName());
+            if(iter.hasNext()) //Only if there is another element/person after
+            {
+                System.out.print(", "); // add a comma after each userName in the list
+            }
+        }
     }
 
     /*************************************************************************************
