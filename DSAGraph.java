@@ -479,7 +479,7 @@ public class DSAGraph
     {
         DSAQueue queue = new DSAQueue();
         User user;
-        Object userName;
+        String userName;
 
         Iterator iter = users.iterator();
         while (iter.hasNext())
@@ -519,6 +519,11 @@ public class DSAGraph
         }
 
         return queue;
+    }
+
+    public void displayStats()
+    {
+
     }
     
 
