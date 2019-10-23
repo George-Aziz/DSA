@@ -114,20 +114,30 @@ public class DSAGraph
     public void removeUser(Object userName)
     {
         User user = getUser(userName);
-        users.removeNode(user);
         Iterator iter = users.iterator();
         while(iter.hasNext()) //First iterator to find the user
         {
             User curUser = (User)iter.next(); //The next thing found is a user
             DSALinkedList list = curUser.getFollows(); //Gets who the person follows
             DSALinkedList followersList = curUser.getFollowers(); //Gets the person's followers
-            if (isFollowing(curUser.getUserName(), user.getUserName()) && isFollower(curUser.getUserName(), user.getUserName()))
+            if (isFollowing(curUser.getUserName(), user.getUserName()))
             {
                 list.removeNode(user);
-                followersList.removeNode(user);
-                curUser.remFollowerCount();
-                curUser.remFollowCount();
+                if (curUser.getFollowCount() > 0)
+                {
+                    curUser.remFollowCount();
+                }
             }
+
+            if (isFollower(curUser.getUserName(), user.getUserName()))
+            {
+                followersList.removeNode(user);
+                if(curUser.getFollowersCount() > 0)
+                {
+                    curUser.remFollowerCount();
+                }
+            }
+
 
             DSALinkedList posts = curUser.getPosts(); //Gets all the posts from the user
             Iterator postsIter = posts.iterator();
@@ -143,6 +153,7 @@ public class DSAGraph
             }
             userCount--; //For stats, Overcall user count in the social network
         } 
+        users.removeNode(user);
         System.out.println(user.getUserName() + " has deleted their account!");
     }
 
