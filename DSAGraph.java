@@ -128,7 +128,6 @@ public class DSAGraph
                     curUser.remFollowCount();
                 }
             }
-
             if (isFollower(curUser.getUserName(), user.getUserName()))
             {
                 followersList.removeNode(user);
@@ -138,14 +137,13 @@ public class DSAGraph
                 }
             }
 
-
             DSALinkedList posts = curUser.getPosts(); //Gets all the posts from the user
             Iterator postsIter = posts.iterator();
             while(postsIter.hasNext()) //Second iterator to find follows for each user
             {
                 Post postData = (Post)postsIter.next();
                 DSALinkedList likeList = postData.getLikes();
-                if(isLiking(curUser.getUserName(),user.getUserName(),postData))
+                if(isLiking(user.getUserName(),postData))
                 {
                     likeList.removeNode(user); 
                     postData.remUserLikeCount();
@@ -185,7 +183,7 @@ public class DSAGraph
         {
             Post postData = (Post)postsIter.next();
             DSALinkedList likeList = postData.getLikes();
-            if(isLiking(followingUser.getUserName(),followerUser.getUserName(),postData))
+            if(isLiking(followerUser.getUserName(),postData))
             {
                 likeList.removeNode(followerUser); 
                 postData.remUserLikeCount();
@@ -263,7 +261,7 @@ public class DSAGraph
     {
         User userOne = getUser(userName1); //get user that has userName1
         DSALinkedList follows = userOne.getFollows();
-        return checkList(userName1, userName2, follows);
+        return checkList(userName2, follows);
     }
 
     /***********************************************************************
@@ -276,7 +274,7 @@ public class DSAGraph
     {
         User userOne = getUser(userName1); //get user that has userName1
         DSALinkedList followers = userOne.getFollowers();
-        return checkList(userName1, userName2, followers);
+        return checkList(userName2, followers);
     }
 
     /***********************************************************************
@@ -285,26 +283,10 @@ public class DSAGraph
     * EXPORTS: state (boolean)
     * ASSERTION: Checks if userName 2 has liked userOne's post
     * **********************************************************************/
-    public boolean isLiking(Object userName1, Object userName2, Post post)
+    public boolean isLiking(Object checkUser, Post post)
     {
         DSALinkedList likes = post.getLikes();
-        return checkList(userName1, userName2, likes);
-    }
-
-    public boolean checkList(Object userName1, Object userName2, DSALinkedList list)
-    {
-        boolean state = false;
-        Iterator iter = list.iterator();
-
-        while (iter.hasNext())
-        {
-            User iterUser = (User)iter.next();
-            if(iterUser.getUserName().equals(userName2)) //If the userName of user one is equal to userName2 which is another user then isFollowing
-            {
-                state = true;
-            }
-        }
-        return state;
+        return checkList(checkUser, likes);
     }
 
     /************************************************************************************************
@@ -407,7 +389,7 @@ public class DSAGraph
                         }
 
                         //If the userTwo likes userThree's post AND userOne is following userTwo
-                        if(isLiking(userThree.getUserName(), userTwo.getUserName(), curPost) && isFollowing(userOne.getUserName(), userTwo.getUserName()))
+                        if(isLiking(userTwo.getUserName(), curPost) && isFollowing(userOne.getUserName(), userTwo.getUserName()))
                         { 
                             if(Math.random() <= followProb)
                             {
@@ -418,6 +400,28 @@ public class DSAGraph
                 }
             }
         }
+    }
+
+     /*******************************************************
+    * SUBMODULE: checkList()
+    * IMPORTS: none
+    * EXPORTS: queue (DSAqueue)
+    * ASSERTION: Checks the list provided if userName 2 is in
+    * ********************************************************/
+    public boolean checkList(Object checkUser, DSALinkedList list)
+    {
+        boolean state = false;
+        Iterator iter = list.iterator();
+
+        while (iter.hasNext())
+        {
+            User iterUser = (User)iter.next();
+            if(iterUser.getUserName().equals(checkUser)) //If the userName of user one is equal to userName2 which is another user then isFollowing
+            {
+                state = true;
+            }
+        }
+        return state;
     }
 
     /****************************************************
@@ -605,7 +609,7 @@ public class DSAGraph
 
         public void addLike(User user)
         {
-           if (!(isLiking(this.getPoster(), user.getUserName(), this))) //Ensuring a person can only like a post once
+           if (!(isLiking(user.getUserName(), this))) //Ensuring a person can only like a post once
             { 
                 this.likes.insertLast(user);
                 likeCount++;
