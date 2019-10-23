@@ -261,22 +261,9 @@ public class DSAGraph
     * **********************************************************************/
     public boolean isFollowing(Object userName1, Object userName2)
     {
-        boolean state = false; //By default the state is false
-        User userOne;
-        userOne = getUser(userName1); //get user that has userName1
-
+        User userOne = getUser(userName1); //get user that has userName1
         DSALinkedList follows = userOne.getFollows();
-        Iterator iter = follows.iterator();
-
-        while (iter.hasNext())
-        {
-            User iterUser = (User)iter.next();
-            if(iterUser.getUserName() == userName2) //If the userName of user one is equal to userName2 which is another user then isFollowing
-            {
-                state = true;
-            }
-        }
-        return state;//Boolean True/False
+        return checkList(userName1, userName2, follows);
     }
 
     /***********************************************************************
@@ -287,22 +274,9 @@ public class DSAGraph
     * **********************************************************************/
     public boolean isFollower(Object userName1, Object userName2)
     {
-        boolean state = false; //By default the state is false
-        User userOne;
-        userOne = getUser(userName1); //get user that has userName1
-
+        User userOne = getUser(userName1); //get user that has userName1
         DSALinkedList followers = userOne.getFollowers();
-        Iterator iter = followers.iterator();
-
-        while (iter.hasNext())
-        {
-            User iterUser = (User)iter.next();
-            if(iterUser.getUserName() == userName2) //If userOne's followers has userName 2 then userName 2 already following
-            {
-                state = true;
-            }
-        }
-        return state;//Boolean True/False
+        return checkList(userName1, userName2, followers);
     }
 
     /***********************************************************************
@@ -313,12 +287,14 @@ public class DSAGraph
     * **********************************************************************/
     public boolean isLiking(Object userName1, Object userName2, Post post)
     {
-        boolean state = false; //By default the state is false
-        User userOne; //User Two is the person getting checked for in the likes
-        userOne = getUser(userName1); //userName1 is the person with the post
-
         DSALinkedList likes = post.getLikes();
-        Iterator iter = likes.iterator();
+        return checkList(userName1, userName2, likes);
+    }
+
+    public boolean checkList(Object userName1, Object userName2, DSALinkedList list)
+    {
+        boolean state = false;
+        Iterator iter = list.iterator();
 
         while (iter.hasNext())
         {
@@ -328,7 +304,7 @@ public class DSAGraph
                 state = true;
             }
         }
-        return state;//Boolean True/False
+        return state;
     }
 
     /************************************************************************************************
@@ -515,7 +491,6 @@ public class DSAGraph
 
     }
     
-
     /***********************************************************************
     * PRIVATE INNER CLASS: User
     * Class for a user which is a person/user in the social network
@@ -606,7 +581,6 @@ public class DSAGraph
             followCount--;
         }
     }
-
 
     /*****************************************************************************************************
     * PRIVATE INNER CLASS: Post
