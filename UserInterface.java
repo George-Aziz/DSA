@@ -8,7 +8,6 @@
 import java.util.*;
 import java.io.*;
 import java.lang.Math.*;
-import java.util.concurrent.TimeUnit;
 public class UserInterface
 {	
 	//Class Fields 
@@ -242,12 +241,7 @@ public class UserInterface
 		String userName;
 		userName = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
 
-		long startTime = System.nanoTime();
 		graph.removeUser(userName);
-		long endTime = System.nanoTime();
-		long timeElapsed = endTime - startTime;
-		System.out.println("Execution time in milliseconds : " + 
-                                            timeElapsed / 1000000);
 	}
 
 
