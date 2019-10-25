@@ -128,7 +128,7 @@ public class FileManager
 		{
 			if (lineArray[0].equals("P")) //Means that a post event will be added 
 			{
-				graph.addPost(lineArray[1].trim(), lineArray[2].trim(), Integer.parseInt(lineArray[3].trim()));
+				graph.addPost(lineArray[1].trim(), lineArray[2].trim(), Double.parseDouble(lineArray[3].trim()));
 			}
 		}
 	}
@@ -139,32 +139,24 @@ public class FileManager
 	EXPORT: none
 	ASSERTION: To be able to write the report of the sim to a file
     *******************************************************************/
-	public void saveNetwork(String fileName, DSAGraph graph)
+	public void saveNetwork(String fileName, DSAQueue queue, boolean appendOrNot)
 	{
 		String message;
-		
-		FileOutputStream fileStrm = null;
-   		PrintWriter pw;
 
 		try 
-		{
-			fileStrm = new FileOutputStream(fileName); 
-			pw = new PrintWriter(fileStrm);
+		{	
+			
+			FileWriter fw = new FileWriter(fileName,appendOrNot);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
 
 
-			DSAQueue userQueue = graph.exportUsers();
-			Iterator userIter = userQueue.iterator();
-			while (userIter.hasNext())
+			Iterator iter = queue.iterator();
+			while (iter.hasNext())
             {
-                pw.println(userIter.next());
+                pw.print(iter.next());
             }
 
-			DSAQueue followQueue = graph.exportFollows();
-			Iterator followIter = followQueue.iterator();
-			while (followIter.hasNext())
-            {
-                pw.println(followIter.next());
-            }
 
 			pw.close(); //Writer must be closed
 			message = "Network File succesfully saved!";
@@ -172,15 +164,6 @@ public class FileManager
 		}
 		catch (IOException e)
 		{
-			if (fileStrm != null) 
-			{
-         		try 
-				{ 
-					fileStrm.close(); 
-				} 
-				catch (IOException ex2) { } // We can’t do anything more! 
-      		}
-			
 			message = "Error in writing to file:" + e.getMessage(); //If an error occurs whilst saving to File, a message will appear to the user
 			UserInterface.showMessage(message);
 		}

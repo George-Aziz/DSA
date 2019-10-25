@@ -5,6 +5,7 @@ import java.lang.Math;
 public class DSAGraph
 {
     //PRIVATE CLASSFIELDS
+    private UserInterface UI; //To Display Messages
     private DSALinkedList users;
     private int userCount;
 
@@ -27,7 +28,7 @@ public class DSAGraph
         if (hasUser(userName) == false)
         {
             users.insertLast(user); //Puts the newly made user in the users linked list
-            System.out.println("New user added: " + userName);
+            UI.showMessage("New user added: " + userName);
             userCount++; //increases userCount after each user is created
         }
     }
@@ -66,7 +67,7 @@ public class DSAGraph
             String name = userOne.getUserName();
             Post newPost = new Post(postData, name, clickBait);
             userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
-            System.out.println(name + " has added a new post!");
+            UI.showMessage(name + " has added a new post!");
         }
     }
 
@@ -152,7 +153,7 @@ public class DSAGraph
             userCount--; //For stats, Overcall user count in the social network
         } 
         users.removeNode(user);
-        System.out.println(user.getUserName() + " has deleted their account!");
+        UI.showMessage(user.getUserName() + " has deleted their account!");
     }
 
     /*********************************************************
@@ -189,7 +190,7 @@ public class DSAGraph
                 postData.remUserLikeCount();
             }
         }
-        System.out.println(followerUser.getUserName() + " has unfollowed " + followingUser.getUserName() +"!");
+        UI.showMessage(followerUser.getUserName() + " has unfollowed " + followingUser.getUserName() +"!");
     }
 
 
@@ -295,36 +296,36 @@ public class DSAGraph
     * EXPORTS: none
     * ASSERTION: Displays user's info including Follows, Followers and Posts with who liked each post
     * ***********************************************************************************************/
-    public void displayUserInfo(Object userName)
+    public DSAQueue displayUserInfo(Object userName, DSAQueue queue)
     {
         User mainUser = getUser(userName); //Main user that will be displayed
 
         DSALinkedList followsList = mainUser.getFollows(); //List of follows for the main user
-        System.out.println("\n--==" + userName + " Info==--"); //Main user's Info displayed starts here
-        System.out.print("\n" + mainUser.getFollowCount() + " Follows: ");
-        displayList(followsList);
+        queue.enqueue("\n--==" + userName + " Info==--"); //Main user's Info displayed starts here
+        queue.enqueue("\n" + mainUser.getFollowCount() + " Follows: ");
+        exportList(followsList, queue);
 
         DSALinkedList followersList = mainUser.getFollowers(); //List of followers of the main user
-        System.out.print("\n\n" + mainUser.getFollowersCount() + " Followers: ");
-        displayList(followersList);
+        queue.enqueue("\n\n" + mainUser.getFollowersCount() + " Followers: ");
+        exportList(followersList, queue);
         
         DSALinkedList posts = mainUser.getPosts(); //Gets all the posts from the main user
         Iterator postsIter = posts.iterator();
-        System.out.print("\n\nPosts:\n");
+        queue.enqueue("\n\nPosts:\n");
         while(postsIter.hasNext()) //Third iterator for the posts of the main user
         {
             Post curPost = (Post)postsIter.next(); 
-            System.out.print("\n" + curPost.getPostData() + "\n"); //Gets whatever the post contains as a String
+            queue.enqueue("\n" + curPost.getPostData() + "\n" + curPost.getLikeCount() + " Likers: "); //Gets whatever the post contains as a String
             DSALinkedList likeList = curPost.getLikes(); //Gets the likes of the curPost
-            System.out.print(curPost.getLikeCount() + " Likers: "); //Gets like count and displays each person
-            displayList(likeList);
+            exportList(likeList, queue);
     
             if(postsIter.hasNext()) //After one post is complete
             {
-                System.out.print("\n"); // add a comma after each userName in the list
+                queue.enqueue("\n"); // add a comma after each userName in the list
             }
         }
-        System.out.print("\n");
+        queue.enqueue("\n");
+        return queue;
     }
 
     /***********************************************************************
@@ -333,18 +334,19 @@ public class DSAGraph
     * EXPORTS: none
     * ASSERTION: Displays an adjacency List
     * **********************************************************************/
-    public void displayAsList()
+    public DSAQueue displayAsList(DSAQueue queue)
     {
         Iterator iter = users.iterator();
-        System.out.println("\nCURRENT NETWORK STATUS:\n"); //Current network status
+        queue.enqueue("\nCURRENT NETWORK STATUS:\n\n"); //Current network status
         while(iter.hasNext()) //First iterator to find the user
         {
             User user = (User)iter.next(); //The next thing found is a user
-            System.out.print(user.getUserName() +" follows: "); //Current user to indicate all follows related to this user
+            queue.enqueue(user.getUserName() +" follows: "); //Current user to indicate all follows related to this user
             DSALinkedList list = user.getFollows(); //List of follows for current user
-            displayList(list);
-            System.out.print("\n"); //After one user is completely shown, move to a new line for the next one
+            exportList(list, queue);
+            queue.enqueue("\n"); //After one user is completely shown, move to a new line for the next one
         }
+        return queue;
     }
 
     /*******************************************************************************
@@ -402,7 +404,7 @@ public class DSAGraph
         }
     }
 
-     /*******************************************************
+    /*********************************************************
     * SUBMODULE: checkList()
     * IMPORTS: none
     * EXPORTS: queue (DSAqueue)
@@ -424,50 +426,37 @@ public class DSAGraph
         return state;
     }
 
-    /****************************************************
-    * SUBMODULE: exportUsers()
-    * IMPORTS: none
+    /************************************************************
+    * SUBMODULE: exportList()
+    * IMPORTS: list (DSALinkedList)
     * EXPORTS: queue (DSAqueue)
-    * ASSERTION: exports all users in network to a queue
-    * ***************************************************/
-    public DSAQueue exportUsers() //Exports a queue in order for file writing
-    {
-        DSAQueue queue = new DSAQueue();
-        User user;
-        String userName;
-
-        Iterator iter = users.iterator();
-        while (iter.hasNext())
-        {
-            user = (User)iter.next();
-            userName = user.getUserName();
-            queue.enqueue(userName);
-        }
-
-        return queue;
-    }
-
-    public void displayList(DSALinkedList list)
+    * ASSERTION: Displays a list with each element separated by ,
+    * ***********************************************************/
+    public void exportList(DSALinkedList list, DSAQueue queue)
     {
         Iterator iter = list.iterator();
         while (iter.hasNext())
         {
             User user = (User)iter.next();
-            System.out.print(user.getUserName());
+           
             if(iter.hasNext()) //Only if there is another element/person after
             {
-                System.out.print(", "); // add a comma after each userName in the list
+               queue.enqueue(user.getUserName() +", "); // add a comma after each userName in the list
+            }
+            else
+            {
+                queue.enqueue(user.getUserName());
             }
         }
     }
 
     /*************************************************************************************
-    * SUBMODULE: exportFollows()
+    * SUBMODULE: exportNetwork()
     * IMPORTS: none
     * EXPORTS: queue (DSAqueue)
     * ASSERTION: exports all follows in network to a queue in same format as a networkFile
     * ************************************************************************************/
-    public DSAQueue exportFollows() //Exports a queue in order for file writing
+    public DSAQueue exportNetwork() //Exports a queue in order for file writing
     {
         DSAQueue queue = new DSAQueue();
 
@@ -475,6 +464,15 @@ public class DSAGraph
         while (iter.hasNext())
         {
             User user = (User)iter.next();
+            String userName = user.getUserName();
+            queue.enqueue(userName);
+            queue.enqueue("\n");
+        }
+
+        Iterator followIter = users.iterator();
+        while (followIter.hasNext())
+        {
+            User user = (User)followIter.next();
             String followerName = user.getUserName();
             DSALinkedList list = user.getFollows(); //List of follows for current user
             Iterator linkIter = list.iterator(); 
@@ -483,12 +481,13 @@ public class DSAGraph
             {
                 User followingUser = (User)linkIter.next();
                 String followingName = followingUser.getUserName();
-                queue.enqueue(followingName + ":" + followerName);
+                queue.enqueue(followingName + ":" + followerName + "\n");
             }
         }
-
+       
         return queue;
-    }
+    } 
+
 
     public void displayStats()
     {
@@ -539,7 +538,7 @@ public class DSAGraph
             if (!(isFollowing(this.getUserName(), user.getUserName()))) //Ensuring a person can only follow a person once
             {
                 this.follows.insertLast(user); //Adds edge by adding the user to the list of follows for selected user
-                System.out.println(this.getUserName() + " is now following " + user.getUserName() + "!");
+                UI.showMessage(this.getUserName() + " is now following " + user.getUserName() + "!");
                 followCount++;
             }
         }
