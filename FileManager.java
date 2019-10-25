@@ -145,7 +145,6 @@ public class FileManager
 
 		try 
 		{	
-			
 			FileWriter fw = new FileWriter(fileName,appendOrNot);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(bw);

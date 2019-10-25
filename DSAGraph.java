@@ -1,3 +1,10 @@
+/*****************************************************************************
+*  Author: George Aziz
+*  Date Created: 13/10/2019
+*  Date Last Modified: 26/10/2019 
+*  Purpose: A Class responsible for the social graph/network
+******************************************************************************/
+
 import java.util.*;
 import java.io.*;
 import java.lang.Math;

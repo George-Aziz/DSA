@@ -2,7 +2,7 @@
 *  Author: George Aziz
 *  Date Created: 13/10/2019
 *  Date Last Modified: 
-*  Purpose: Calls the UI which leads to the program 
+*  Purpose: Main for the program that will either go interactive or sim mode 
 ******************************************************************************/
 
 import java.util.*;
@@ -15,7 +15,7 @@ public class SocialSim
 		if (args.length == 1 && args[0].equals("-i")) 
 		{
 			UserInterface UI = new UserInterface();	
-			UI.mainMenu(); //Call the main menu which connects all the methods in userInterface that would call methods from other classes
+			UI.mainMenu(); //Calls the main menu for UserInterface which is also the menu for interactive mode
 		}
 		else if (args.length == 5 && args[0].equals("-s"))
 		{
@@ -25,8 +25,7 @@ public class SocialSim
 			double followProb = Double.parseDouble(args[4]);
 
 			SimulationMode sim = new SimulationMode(networkFile, eventFile, likeProb, followProb);
-			sim.mainSim();
-
+			sim.mainSim(); //Calls the main sim function
 		}
 		else if (args.length == 0 || !(args[0].equals("-i")) || !(args[0].equals("-s"))) 
 		{
