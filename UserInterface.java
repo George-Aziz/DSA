@@ -59,48 +59,47 @@ public class UserInterface
 			
 			switch(option)
 			{
-				case 1:
+				case 1: //Load network file
 					loadFile(); 
 				break;
 				case 2:
 					followProb = inputDouble("Please input the probability of following (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 					likeProb = inputDouble("Please input the probability of liking (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 				break;	
-				case 3:
+				case 3: //Insert A new user into network
 					insertNewUser();
 					break;
-				case 4:
+				case 4: //Finds an existing user in network
 					findUser();
 					break;
-				case 5:
+				case 5: //Removes User from entire network
 					removeUser();
 					break;
-				case 6:
+				case 6: //Adds a follow for one user to another
 					addFollow();
 					break;
-				case 7:
+				case 7: //Removes a follow from one user to another
 					removeFollow();
 					break;
-				case 8:
+				case 8: //Inserts a post for a user 
 					insertPostManual();
 					break;
-				case 9:
+				case 9: //Displays network as Adjacency List
 					displayNetwork();	
 					break;
-				case 10:
+				case 10: //Displays the stats of the current state of the network
 					displayStats();
 					break;
 				case 11: //Run update/time-step
 					graph.timeStep(likeProb, followProb);
 					break;
-				case 12:
+				case 12: //Saves the network to a file 
 					saveNetwork();
 					break;
-				case 13:
+				case 13: //Exit Option
 					System.out.println("You have selected to exit. Good Bye"); //If the user wants to exit the program
 					break;
 			}
-
 		} 
 		while (option != 13); //Validation to ensure that this menu keeps being outputted unless the options in the selected range has been chosen 
 	}
@@ -115,7 +114,7 @@ public class UserInterface
 	{
 		Scanner sc = new Scanner(System.in);
 		String fileName;
-		System.out.println("\nPlease enter the file name with its extension (.csv): ");
+		System.out.println("\nPlease enter the file name with its extension: ");
 
 		fileName = sc.nextLine(); //User inputs the file name
 
@@ -124,7 +123,7 @@ public class UserInterface
 	
 	/**************************************************************************
 	SUBMODULE: loadFile (loads the file)
-	IMPORT: graph (DSAGraph), filemgr (FileManager)
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Menu for when the user picks to load networks/events from a file
 	***************************************************************************/
@@ -148,10 +147,10 @@ public class UserInterface
 	}
 	
 	/****************************************************************************************
-	SUBMODULE: saveNetwork
-	IMPORT: graph (DSAGraph), fileMgr (FileManager)
+	SUBMODULE: saveNetwork()
+	IMPORT: none
 	EXPORT: none
-	ASSERTION: When the user wants to save the network to a file in its current state in .txt
+	ASSERTION: When the user wants to save the network to a file in its current state to a file
 	*****************************************************************************************/
 	public void saveNetwork()
 	{
@@ -161,12 +160,12 @@ public class UserInterface
 		fileMgr.saveNetwork(fileName, queue, false); //False since we do not want to append
 	}
 	
-	/*****************************************************************************************
-	SUBMODULE: insertPostManual
-	IMPORT: graph (DSAGraph)
+	/****************************************************
+	SUBMODULE: insertPostManual()
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Inputs a post for a specefied user
-	******************************************************************************************/
+	****************************************************/
 	public void insertPostManual()
 	{	
 		String user, post;
@@ -179,12 +178,12 @@ public class UserInterface
 	}
 
 
-	/*****************************************************************************************
-	SUBMODULE: insertNewUser
-	IMPORT: graph (DSAGraph)
+	/*************************************************
+	SUBMODULE: insertNewUser()
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Inputs a new user into social network
-	******************************************************************************************/
+	*************************************************/
 	public void insertNewUser()
 	{
 		String user;
@@ -195,8 +194,8 @@ public class UserInterface
 
 
 	/*****************************************************************************************
-	SUBMODULE: addFollow
-	IMPORT: graph (DSAGraph)
+	SUBMODULE: addFollow()
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Makes the specefied user follow another person
 	******************************************************************************************/
@@ -210,12 +209,12 @@ public class UserInterface
 	}
 
 
-	/*****************************************************************************************
-	SUBMODULE: findUser
-	IMPORT: graph (DSAGraph)
+	/**************************************************************
+	SUBMODULE: findUser()
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Finds a user and displays all their information
-	******************************************************************************************/
+	**************************************************************/
 	public void findUser()
 	{
 		String user;
@@ -232,12 +231,12 @@ public class UserInterface
 	}
 
 
-	/*****************************************************************************************
-	SUBMODULE: removeUser
-	IMPORT: graph (DSAGraph)
+	/**************************************************************************
+	SUBMODULE: removeUser()
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Finds the user specefied and then removes them from the network
-	******************************************************************************************/
+	***************************************************************************/
 	public void removeUser()
 	{
 		String userName;
@@ -247,12 +246,12 @@ public class UserInterface
 	}
 
 
-	/*****************************************************************************************
-	SUBMODULE: removeFollow
-	IMPORT: graph (DSAGraph)
+	/***************************************************************************************
+	SUBMODULE: removeFollow()
+	IMPORT: none
 	EXPORT: none
 	ASSERTION: Finds the user, and then finds the user in their follow list and removes it
-	******************************************************************************************/
+	***************************************************************************************/
 	public void removeFollow()
 	{
 		String userName, userName1;
@@ -262,12 +261,12 @@ public class UserInterface
 		graph.removeFollow(userName, userName1);
 	}
 
-	/***********************************************************************************
+	/************************************************************************************
     * SUBMODULE: displayNetwork()
     * IMPORTS: none
     * EXPORTS: none
-    * ASSERTION: Calls the display method of the network which displays as Asjacent list
-    * **********************************************************************************/
+    * ASSERTION: Calls the display method of the network which displays as Adjacency list
+    * ***********************************************************************************/
 	public void displayNetwork()
 	{
 		DSAQueue listDisplay = new DSAQueue();
@@ -393,10 +392,10 @@ public class UserInterface
 	}
 
 	/********************************************************************************
-	SUBMODULE: inputUser
+	SUBMODULE: inputNewUser
 	IMPORT: prompt (String), error (String)
 	EXPORT: inputUserName (String)
-	ASSERTION: User input for user names input
+	ASSERTION: User input for a new user names input (DOESNT CHECK IF USER EXISTS)
 	*********************************************************************************/
 	public String inputNewUser(String prompt, String error)
 	{
@@ -445,7 +444,7 @@ public class UserInterface
 	SUBMODULE: inputClickBait
 	IMPORT: prompt (String), error (String), min (Real), max (Real)
 	EXPORT: doubleInput (Real)
-	ASSERTION: User input submodule to input a click bait factor above 0 
+	ASSERTION: User input submodule to input a click bait factor that is positive 
 	*********************************************************************************/
 	public double inputClickBait(String prompt, String error, double min) //No max needed for click bait
 	{
