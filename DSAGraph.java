@@ -8,12 +8,14 @@ public class DSAGraph
     private UserInterface UI; //To Display Messages
     private DSALinkedList users;
     private int userCount;
+    private int postCount;
 
     //Default Constructor
     public DSAGraph()
     {
         users = new DSALinkedList();
         userCount = 0;
+        postCount = 0;
     }
 
     /*******************************************************
@@ -28,8 +30,8 @@ public class DSAGraph
         if (hasUser(userName) == false)
         {
             users.insertLast(user); //Puts the newly made user in the users linked list
+            userCount = userCount + 1; //increases userCount after each user is created
             UI.showMessage("New user added: " + userName);
-            userCount++; //increases userCount after each user is created
         }
     }
 
@@ -67,6 +69,7 @@ public class DSAGraph
             String name = userOne.getUserName();
             Post newPost = new Post(postData, name, clickBait);
             userOne.addPost(newPost); //Adds userTwo into linked list of follows for VertexOne
+            postCount++;
             UI.showMessage(name + " has added a new post!");
         }
     }
@@ -150,8 +153,8 @@ public class DSAGraph
                     postData.remUserLikeCount();
                 }
             }
-            userCount--; //For stats, Overcall user count in the social network
         } 
+        userCount--; //For stats, Overcall user count in the social network
         users.removeNode(user);
         UI.showMessage(user.getUserName() + " has deleted their account!");
     }
@@ -357,7 +360,6 @@ public class DSAGraph
     * ******************************************************************************/
     public void timeStep(double likeProb, double followProb)
     {
-
         Iterator usersIter = users.iterator(); 
         while(usersIter.hasNext()) //Goes through the users in the network
         {
@@ -389,7 +391,6 @@ public class DSAGraph
                         {
                             curPost.addLike(userTwo); //Adds a like to the post if probability is met
                         }
-
                         //If the userTwo likes userThree's post AND userOne is following userTwo
                         if(isLiking(userTwo.getUserName(), curPost) && isFollowing(userOne.getUserName(), userTwo.getUserName()))
                         { 
@@ -488,12 +489,234 @@ public class DSAGraph
         return queue;
     } 
 
-
-    public void displayStats()
+    /***************************************************************
+    * SUBMODULE: displayStats()
+    * IMPORTS: none
+    * EXPORTS: queue (DSAqueue)
+    * ASSERTION: exports stats on the current state of the network
+    * **************************************************************/
+    public void displayStats(DSAQueue queue)
     {
+        User [] userArray; //Array of users for sorting
+        Post [] postArray; //Array of posts for sorting
+        int topUsers = 5; //A number for the for loop of users to go to when displaying
+        int topPosts = 5; //A number for the for loop of posts to go to when displaying
+        queue.enqueue("\nCURRENT NETWORK STATISTICS\n");
+        userArray = putUserArray(); //Puts all users in linked list into an array
+        sortUser(userArray); //Sorts the array in terms of popularity (High - Low)
+        if (userCount < topUsers) //In case there aren't 5 users the for loop will go to the amount of users currently
+        {
+            topUsers = userCount;
+        }
+        queue.enqueue("\nTop 5 most popular users: \n\n");
+        for(int i = 0; i < topUsers; i++)
+        {
+            User user = (User)userArray[i];
+            queue.enqueue((i+1) + ". " + user.getUserName() + " with " + user.getFollowersCount() + " followers\n");
+        }
+        postArray = putPostArray(); //Puts All posts of network into array
+        sortPosts(postArray); //Sorts the Posts in terms of popularity (High - Low)
+        if (postCount < topPosts) //In case there aren't 5 posts the for loop will go to the amount of posts currently
+        {
+            topPosts = postCount;
+        }
+        queue.enqueue("\nTop 5 most popular posts: \n\n");
+        for(int i = 0; i < topPosts; i++)
+        {
+            Post post = (Post)postArray[i];
+            queue.enqueue((i+1) + ". " +post.getPoster() + ": " + post.getPostData() + " has " + post.getLikeCount() + " likes\n");
+        }
+        //The next section is to display the most popular user and all their information
+        User popUser = (User)userArray[0];
+        DSALinkedList followsList = popUser.getFollows(); // Gets who they follow
+        DSALinkedList followersList = popUser.getFollowers(); //Gets who the followers are
+        DSALinkedList postsList = popUser.getPosts(); //Gets all there posts 
+        queue.enqueue("\n------======Most Popular User======------\n");
+        queue.enqueue("\n" + popUser.getUserName() + "\n");
+        queue.enqueue("\n" + popUser.getFollowCount() + " Follows: ");
+        exportList(followsList, queue);
+        queue.enqueue("\n\n" + popUser.getFollowersCount() + " Followers: ");
+        exportList(followersList, queue);
+        Iterator postsIter = postsList.iterator();
+        queue.enqueue("\n\nPosts:\n");
+        while(postsIter.hasNext()) //Iterates over all the posts of the person and displays all related information
+        {
+            Post curPost = (Post)postsIter.next(); 
+            queue.enqueue("\n" + curPost.getPostData() + "\n" + curPost.getLikeCount() + " Likers: "); //Gets whatever the post contains as a String
+            DSALinkedList likeList = curPost.getLikes(); //Gets the likes of the curPost
+            exportList(likeList, queue);
+    
+            if(postsIter.hasNext()) //After one post is complete
+            {
+                queue.enqueue("\n"); // add a comma after each userName in the list
+            }
+        }
+        queue.enqueue("\n");
 
     }
-    
+
+    /***************************************************************
+    * SUBMODULE: putUserArray
+    * IMPORTS: none
+    * EXPORTS: userArray (Array of Users)
+    * ASSERTION: Puts all users in the network into an array
+    * **************************************************************/
+    public User[] putUserArray()
+    {
+        User [] userArray = new User[userCount];
+        Iterator usersIter = users.iterator(); 
+        int i = 0;
+        while(usersIter.hasNext()) //Goes through the users in the network
+        {
+            User user = (User)usersIter.next();
+            userArray[i] = user;
+            i++;
+        }
+        return userArray;
+    }
+
+    public void sortUser(User[] A)
+    {
+        mergeSortRecurseU(A, 0, userCount-1);
+    }//mergeSort()
+
+    private void mergeSortRecurseU(User[] A, int leftIdx, int rightIdx)
+    {
+        if (leftIdx < rightIdx)
+        {
+            int midIdx = (leftIdx + rightIdx) / 2;
+
+            mergeSortRecurseU(A, leftIdx, midIdx); //Recurse: Sort left half of the current sub-array
+            mergeSortRecurseU(A, midIdx+1, rightIdx); //Recurse: Sort right half of the current sub-array
+
+            mergeUser(A, leftIdx, midIdx, rightIdx); //Merge the left and right sub arrays
+        }
+    }//mergeSortRecurse()
+
+    private void mergeUser(User[] A, int leftIdx, int midIdx, int rightIdx)
+    {
+        User tempArr[] = new User[rightIdx - leftIdx + 1];
+        int ii = leftIdx; //index for the 'front' of left sub array
+        int jj = midIdx + 1; //index for the 'front' of right sub array
+        int kk = 0; //index for next free elemen leftValue in tempArr
+
+        while ((ii <= midIdx) && (jj <= rightIdx)) //merge sub arrays into tempArr
+        {
+            if (A[ii].getFollowersCount() >= A[jj].getFollowersCount())
+            {
+                tempArr[kk] = A[ii]; //take from left sub-array
+                ii = ii + 1;
+            }
+            else
+            {
+                tempArr[kk] = A[jj]; //take from right sub-array
+                jj = jj + 1;
+            }
+            kk = kk + 1;
+        }
+
+        for (ii = ii; ii <= midIdx; ii++)
+        {
+            tempArr[kk] = A[ii];
+            kk = kk + 1;
+        }
+
+        for (jj = jj; jj <= rightIdx; jj++)
+        {
+            tempArr[kk] = A[jj];
+            kk = kk + 1;
+        }
+
+        for (kk = leftIdx; kk <= rightIdx; kk++)
+        {
+            A[kk] = tempArr[kk - leftIdx];
+        }
+    }//merge()
+
+    /***************************************************************
+    * SUBMODULE: putPost
+    * IMPORTS: none
+    * EXPORTS: postArray (Array of Posts)
+    * ASSERTION: Puts all posts in the network into an array
+    * **************************************************************/
+    public Post[] putPostArray()
+    {
+        Post [] postArray = new Post[postCount];
+        Iterator usersIter = users.iterator(); 
+        int i = 0;
+        while(usersIter.hasNext()) //Goes through the users in the network
+        {
+            User user = (User)usersIter.next();
+            DSALinkedList postList = user.getPosts();
+            Iterator postsIter = postList.iterator();
+            while(postsIter.hasNext())
+            {
+                Post post = (Post)postsIter.next();
+                postArray[i] = post;
+                i++;
+            }
+        }
+        return postArray;
+    }
+
+    public void sortPosts(Post[] A)
+    {
+        mergeSortRecurseP(A, 0, postCount-1);
+    }//mergeSort()
+
+    private void mergeSortRecurseP(Post[] A, int leftIdx, int rightIdx)
+    {
+        if (leftIdx < rightIdx)
+        {
+            int midIdx = (leftIdx + rightIdx) / 2;
+
+            mergeSortRecurseP(A, leftIdx, midIdx); //Recurse: Sort left half of the current sub-array
+            mergeSortRecurseP(A, midIdx+1, rightIdx); //Recurse: Sort right half of the current sub-array
+
+            mergePost(A, leftIdx, midIdx, rightIdx); //Merge the left and right sub arrays
+        }
+    }//mergeSortRecurse()
+
+    private void mergePost(Post[] A, int leftIdx, int midIdx, int rightIdx)
+    {
+        Post tempArr[] = new Post[rightIdx - leftIdx + 1];
+        int ii = leftIdx; //index for the 'front' of left sub array
+        int jj = midIdx + 1; //index for the 'front' of right sub array
+        int kk = 0; //index for next free elemen leftValue in tempArr
+
+        while ((ii <= midIdx) && (jj <= rightIdx)) //merge sub arrays into tempArr
+        {
+            if (A[ii].getLikeCount() >= A[jj].getLikeCount())
+            {
+                tempArr[kk] = A[ii]; //take from left sub-array
+                ii = ii + 1;
+            }
+            else
+            {
+                tempArr[kk] = A[jj]; //take from right sub-array
+                jj = jj + 1;
+            }
+            kk = kk + 1;
+        }
+
+        for (ii = ii; ii <= midIdx; ii++)
+        {
+            tempArr[kk] = A[ii];
+            kk = kk + 1;
+        }
+
+        for (jj = jj; jj <= rightIdx; jj++)
+        {
+            tempArr[kk] = A[jj];
+            kk = kk + 1;
+        }
+
+        for (kk = leftIdx; kk <= rightIdx; kk++)
+        {
+            A[kk] = tempArr[kk - leftIdx];
+        }
+    }
+
     /***********************************************************************
     * PRIVATE INNER CLASS: User
     * Class for a user which is a person/user in the social network
@@ -504,6 +727,7 @@ public class DSAGraph
         private String userName; //Name of person
         private int followerCount;
         private int followCount;
+        private int postCount;
         private DSALinkedList follows; //List with all the users current user following
         private DSALinkedList followers; //List with all the users following current user
         private DSALinkedList posts; //List of all posts that current user has put out
@@ -516,6 +740,7 @@ public class DSAGraph
             userName = inUserName;
             followCount = 0;
             followerCount = 0;
+            postCount = 0;
         }
 
         public String getUserName()
@@ -554,8 +779,8 @@ public class DSAGraph
 
         public void addPost(Post newPost)
         {
-            
             this.posts.insertLast(newPost);
+            postCount++;
         }
 
         public DSALinkedList getPosts()
@@ -573,6 +798,10 @@ public class DSAGraph
             return this.followCount;
         }
 
+        public int getPostCount()
+        {
+            return this.postCount;
+        }
         
         public void remFollowerCount()
         {

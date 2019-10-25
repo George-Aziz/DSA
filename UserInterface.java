@@ -61,32 +61,32 @@ public class UserInterface
 			switch(option)
 			{
 				case 1:
-					loadFile(); 
+					loadFile(graph, fileMgr); 
 				break;
 				case 2: //Reading in the event file 
-					loadFile(); 
+					loadFile(graph, fileMgr); 
 				break;
 				case 3:
 					followProb = inputDouble("Please input the probability of following (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 					likeProb = inputDouble("Please input the probability of liking (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 				break;	
 				case 4:
-					insertNewUser();
+					insertNewUser(graph);
 					break;
 				case 5:
-					findUser();
+					findUser(graph);
 					break;
 				case 6:
-					removeUser();
+					removeUser(graph);
 					break;
 				case 7:
-					addFollow();
+					addFollow(graph);
 					break;
 				case 8:
-					removeFollow();
+					removeFollow(graph);
 					break;
 				case 9:
-					insertPostManual();
+					insertPostManual(graph);
 					break;
 				case 10:
 					DSAQueue listDisplay = new DSAQueue();
@@ -98,13 +98,19 @@ public class UserInterface
 					}
 					break;
 				case 11:
-					//Statistics
+					DSAQueue statQueue = new DSAQueue();
+					graph.displayStats(statQueue);
+					Iterator statIter = statQueue.iterator();
+					while (statIter.hasNext())
+					{
+						System.out.print(statIter.next());
+					}
 					break;
 				case 12: //Run update/time-step
 					graph.timeStep(likeProb, followProb);
 					break;
 				case 13:
-					saveNetwork();
+					saveNetwork(graph, fileMgr);
 					break;
 				case 14:
 					System.out.println("You have selected to exit. Good Bye"); //If the user wants to exit the program
@@ -138,7 +144,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Menu for when the user picks to load networks/events from a file
 	***************************************************************************/
-	public void loadFile() 
+	public void loadFile(DSAGraph graph, FileManager fileMgr) 
 	{
 		String fileName;
 		int count = 0; //Count is 0 since no line has been processed yet
@@ -163,7 +169,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: When the user wants to save the network to a file in its current state in .txt
 	*****************************************************************************************/
-	public void saveNetwork()
+	public void saveNetwork(DSAGraph graph, FileManager fileMgr)
 	{
 		System.out.println("\nNOTE: If you enter a file that already exists, it will overwrite the file!");
 		String fileName = getFileName();
@@ -177,7 +183,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Inputs a post for a specefied user
 	******************************************************************************************/
-	public void insertPostManual()
+	public void insertPostManual(DSAGraph graph)
 	{	
 		String user, post;
 		double clickBait;
@@ -195,7 +201,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Inputs a new user into social network
 	******************************************************************************************/
-	public void insertNewUser()
+	public void insertNewUser(DSAGraph graph)
 	{
 		String user;
 		user = inputNewUser("\nPlease input the name of the new user:", "ERROR: Can't have empty name for user"); 
@@ -210,7 +216,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Makes the specefied user follow another person
 	******************************************************************************************/
-	public void addFollow()
+	public void addFollow(DSAGraph graph)
 	{
 		String main, follow;
 		main = inputUser("\nPlease input the name of the user that wants to follow:", "ERROR: Can't have empty name for user"); 
@@ -226,7 +232,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Finds a user and displays all their information
 	******************************************************************************************/
-	public void findUser()
+	public void findUser(DSAGraph graph)
 	{
 		String user;
 		
@@ -248,7 +254,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Finds the user specefied and then removes them from the network
 	******************************************************************************************/
-	public void removeUser()
+	public void removeUser(DSAGraph graph)
 	{
 		String userName;
 		userName = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
@@ -263,7 +269,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Finds the user, and then finds the user in their follow list and removes it
 	******************************************************************************************/
-	public void removeFollow()
+	public void removeFollow(DSAGraph graph)
 	{
 		String userName, userName1;
 		userName = inputUser("\nPlease input the name of the user you want to remove follow from:", "ERROR: User not found!");
