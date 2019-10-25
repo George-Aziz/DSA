@@ -1,9 +1,9 @@
-/*****************************************************************************
+/**************************************************************************************
 *  Author: George Aziz
-*  Date Created: 04/05/2019
-*  Date Last Modified: 26/05/2019
-*  Purpose: Handles all user input / output for this program
-******************************************************************************/
+*  Date Created: 11/10/2019
+*  Date Last Modified: 26/10/2019
+*  Purpose: Handles all user input / output for this program ALSO interactive mode menu
+***************************************************************************************/
 
 import java.util.*;
 import java.io.*;
@@ -262,6 +262,12 @@ public class UserInterface
 		graph.removeFollow(userName, userName1);
 	}
 
+	/***********************************************************************************
+    * SUBMODULE: displayNetwork()
+    * IMPORTS: none
+    * EXPORTS: none
+    * ASSERTION: Calls the display method of the network which displays as Asjacent list
+    * **********************************************************************************/
 	public void displayNetwork()
 	{
 		DSAQueue listDisplay = new DSAQueue();
@@ -273,6 +279,12 @@ public class UserInterface
 		}
 	}
 
+	/******************************************************************************************
+    * SUBMODULE: displayStats()
+    * IMPORTS: none
+    * EXPORTS: none
+    * ASSERTION: Calls the displayStats method that displays all stats for current network state
+    * ******************************************************************************************/
 	public void displayStats()
 	{
 		DSAQueue statQueue = new DSAQueue();
