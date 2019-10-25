@@ -6,9 +6,9 @@ public class DSAGraph
 {
     //PRIVATE CLASSFIELDS
     private UserInterface UI; //To Display Messages
-    private DSALinkedList users;
-    private int userCount;
-    private int postCount;
+    private DSALinkedList users; 
+    private int userCount; //Total count of users in the network
+    private int postCount; //Total count of posts for sorting
 
     //Default Constructor
     public DSAGraph()
@@ -41,13 +41,13 @@ public class DSAGraph
     * EXPORTS: none
     * ASSERTION: adds a follow from one user to another
     * ******************************************************/
-    public void addFollow (Object userName1, Object userName2) //Directed edges
+    public void addFollow (Object follower, Object following) //Directed edges
     {
         User userOne, userTwo;
 
-        userOne = getUser(userName1); //gets user with userName
-        userTwo = getUser(userName2);
-        if(hasUser(userName1) && hasUser(userName2) && (!userOne.equals(userTwo))) //Only adds the edge if both users exist
+        userOne = getUser(follower); //gets user with userName
+        userTwo = getUser(following);
+        if(hasUser(follower) && hasUser(following) && (!userOne.equals(userTwo))) //Only adds the edge if both users exist
         {  
             userOne.addFollow(userTwo); //Adds userTwo into linked list of follows for UserOne
             userTwo.addFollower(userOne); //Adds userOne into linked list of followers for userTwo
@@ -195,7 +195,6 @@ public class DSAGraph
         }
         UI.showMessage(followerUser.getUserName() + " has unfollowed " + followingUser.getUserName() +"!");
     }
-
 
     /*************************************************
     * SUBMODULE: getUser()
@@ -366,7 +365,6 @@ public class DSAGraph
             User userOne = (User)usersIter.next(); //The first user [A]->B->C
             //Goes through the users in the network again 
             Iterator usersIterTwo = users.iterator(); 
-
             while(usersIterTwo.hasNext()) //Goes through all the users from main list again
             {
                 User userTwo = (User)usersIterTwo.next(); //The middle user A->[B]->C
@@ -485,7 +483,6 @@ public class DSAGraph
                 queue.enqueue(followingName + ":" + followerName + "\n");
             }
         }
-       
         return queue;
     } 
 
@@ -499,8 +496,8 @@ public class DSAGraph
     {
         User [] userArray; //Array of users for sorting
         Post [] postArray; //Array of posts for sorting
-        int topUsers = 5; //A number for the for loop of users to go to when displaying
-        int topPosts = 5; //A number for the for loop of posts to go to when displaying
+        int topUsers = 5; //array number for the for loop of users to go to when displaying
+        int topPosts = 5; //array number for the for loop of posts to go to when displaying
         queue.enqueue("\nCURRENT NETWORK STATISTICS\n");
         userArray = putUserArray(); //Puts all users in linked list into an array
         sortUser(userArray); //Sorts the array in terms of popularity (High - Low)
@@ -552,7 +549,6 @@ public class DSAGraph
             }
         }
         queue.enqueue("\n");
-
     }
 
     /***************************************************************
@@ -575,25 +571,37 @@ public class DSAGraph
         return userArray;
     }
 
-    public void sortUser(User[] A)
+    /***************************************************************
+    * SUBMODULE: sortUser
+    * Wrapper Method for merging but for Users
+    * **************************************************************/
+    public void sortUser(User[] array)
     {
-        mergeSortRecurseU(A, 0, userCount-1);
-    }//mergeSort()
+        mergeSortRecurseU(array, 0, userCount-1);
+    }
 
-    private void mergeSortRecurseU(User[] A, int leftIdx, int rightIdx)
+    /***************************************************************
+    * SUBMODULE: mergeSortRecurseU
+    * Method for recursively calling merge but for Users
+    * **************************************************************/
+    private void mergeSortRecurseU(User[] array, int leftIdx, int rightIdx)
     {
         if (leftIdx < rightIdx)
         {
             int midIdx = (leftIdx + rightIdx) / 2;
 
-            mergeSortRecurseU(A, leftIdx, midIdx); //Recurse: Sort left half of the current sub-array
-            mergeSortRecurseU(A, midIdx+1, rightIdx); //Recurse: Sort right half of the current sub-array
+            mergeSortRecurseU(array, leftIdx, midIdx); //Recurse: Sort left half of the current sub-array
+            mergeSortRecurseU(array, midIdx+1, rightIdx); //Recurse: Sort right half of the current sub-array
 
-            mergeUser(A, leftIdx, midIdx, rightIdx); //Merge the left and right sub arrays
+            mergeUser(array, leftIdx, midIdx, rightIdx); //Merge the left and right sub arrays
         }
-    }//mergeSortRecurse()
+    }
 
-    private void mergeUser(User[] A, int leftIdx, int midIdx, int rightIdx)
+    /***************************************************************
+    * SUBMODULE: mergeUser
+    * Method for merging but for Users
+    * **************************************************************/
+    private void mergeUser(User[] array, int leftIdx, int midIdx, int rightIdx)
     {
         User tempArr[] = new User[rightIdx - leftIdx + 1];
         int ii = leftIdx; //index for the 'front' of left sub array
@@ -602,36 +610,33 @@ public class DSAGraph
 
         while ((ii <= midIdx) && (jj <= rightIdx)) //merge sub arrays into tempArr
         {
-            if (A[ii].getFollowersCount() >= A[jj].getFollowersCount())
+            if (array[ii].getFollowersCount() >= array[jj].getFollowersCount())
             {
-                tempArr[kk] = A[ii]; //take from left sub-array
+                tempArr[kk] = array[ii]; //take from left sub-array
                 ii = ii + 1;
             }
             else
             {
-                tempArr[kk] = A[jj]; //take from right sub-array
+                tempArr[kk] = array[jj]; //take from right sub-array
                 jj = jj + 1;
             }
             kk = kk + 1;
         }
-
         for (ii = ii; ii <= midIdx; ii++)
         {
-            tempArr[kk] = A[ii];
+            tempArr[kk] = array[ii];
             kk = kk + 1;
         }
-
         for (jj = jj; jj <= rightIdx; jj++)
         {
-            tempArr[kk] = A[jj];
+            tempArr[kk] = array[jj];
             kk = kk + 1;
         }
-
         for (kk = leftIdx; kk <= rightIdx; kk++)
         {
-            A[kk] = tempArr[kk - leftIdx];
+            array[kk] = tempArr[kk - leftIdx];
         }
-    }//merge()
+    }
 
     /***************************************************************
     * SUBMODULE: putPost
@@ -659,25 +664,37 @@ public class DSAGraph
         return postArray;
     }
 
-    public void sortPosts(Post[] A)
+    /***************************************************************
+    * SUBMODULE: sortPosts
+    * Wrapper Method for merge sort but for post class
+    * **************************************************************/
+    public void sortPosts(Post[] array)
     {
-        mergeSortRecurseP(A, 0, postCount-1);
-    }//mergeSort()
+        mergeSortRecurseP(array, 0, postCount-1);
+    }
 
-    private void mergeSortRecurseP(Post[] A, int leftIdx, int rightIdx)
+    /***************************************************************
+    * SUBMODULE: mergeSortRecurseP
+    * Method for recursively sorting Posts
+    * **************************************************************/
+    private void mergeSortRecurseP(Post[] array, int leftIdx, int rightIdx)
     {
         if (leftIdx < rightIdx)
         {
             int midIdx = (leftIdx + rightIdx) / 2;
 
-            mergeSortRecurseP(A, leftIdx, midIdx); //Recurse: Sort left half of the current sub-array
-            mergeSortRecurseP(A, midIdx+1, rightIdx); //Recurse: Sort right half of the current sub-array
+            mergeSortRecurseP(array, leftIdx, midIdx); //Recurse: Sort left half of the current sub-array
+            mergeSortRecurseP(array, midIdx+1, rightIdx); //Recurse: Sort right half of the current sub-array
 
-            mergePost(A, leftIdx, midIdx, rightIdx); //Merge the left and right sub arrays
+            mergePost(array, leftIdx, midIdx, rightIdx); //Merge the left and right sub arrays
         }
-    }//mergeSortRecurse()
+    }
 
-    private void mergePost(Post[] A, int leftIdx, int midIdx, int rightIdx)
+    /***************************************************************
+    * SUBMODULE: mergePosts
+    * Method for merging but for Posts
+    * **************************************************************/
+    private void mergePost(Post[] array, int leftIdx, int midIdx, int rightIdx)
     {
         Post tempArr[] = new Post[rightIdx - leftIdx + 1];
         int ii = leftIdx; //index for the 'front' of left sub array
@@ -686,34 +703,31 @@ public class DSAGraph
 
         while ((ii <= midIdx) && (jj <= rightIdx)) //merge sub arrays into tempArr
         {
-            if (A[ii].getLikeCount() >= A[jj].getLikeCount())
+            if (array[ii].getLikeCount() >= array[jj].getLikeCount())
             {
-                tempArr[kk] = A[ii]; //take from left sub-array
+                tempArr[kk] = array[ii]; //take from left sub-array
                 ii = ii + 1;
             }
             else
             {
-                tempArr[kk] = A[jj]; //take from right sub-array
+                tempArr[kk] = array[jj]; //take from right sub-array
                 jj = jj + 1;
             }
             kk = kk + 1;
         }
-
         for (ii = ii; ii <= midIdx; ii++)
         {
-            tempArr[kk] = A[ii];
+            tempArr[kk] = array[ii];
             kk = kk + 1;
         }
-
         for (jj = jj; jj <= rightIdx; jj++)
         {
-            tempArr[kk] = A[jj];
+            tempArr[kk] = array[jj];
             kk = kk + 1;
         }
-
         for (kk = leftIdx; kk <= rightIdx; kk++)
         {
-            A[kk] = tempArr[kk - leftIdx];
+            array[kk] = tempArr[kk - leftIdx];
         }
     }
 

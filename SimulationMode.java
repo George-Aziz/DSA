@@ -1,8 +1,8 @@
 /*****************************************************************************
 *  Author: George Aziz
-*  Date Created: 04/05/2019
-*  Date Last Modified: 26/05/2019
-*  Purpose: Handles all user input / output for this program
+*  Date Created: 25/05/2019
+*  Date Last Modified: 
+*  Purpose: Handles Simulation Mode for SocialSim
 ******************************************************************************/
 
 import java.util.*;
@@ -66,7 +66,8 @@ public class SimulationMode
 	public void saveLogs(DSAQueue queue)
 	{
 		System.out.println("\nNOTE: If you enter a file that already exists, it will overwrite the file!");
-		String fileName = new SimpleDateFormat("dd-HH-mm':Sim.log'").format(new Date());;
+		String fileName = new SimpleDateFormat("dd-HH-mm' Sim.log'").format(new Date());;
+		graph.displayStats(queue);
 		graph.displayAsList(queue);
 		fileMgr.saveNetwork(fileName, queue,true); //True since we want to append to file
 	}

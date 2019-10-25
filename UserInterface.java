@@ -42,83 +42,67 @@ public class UserInterface
 			//First output prompt to the user to access all functionalities of the program
 			System.out.println("\n\n---===Main Menu===---");           
 			System.out.println("1: Load network file");                                    
-			System.out.println("2: Load event file");                                    
-			System.out.println("3: Set probabilities");
-			System.out.println("4: Insert new user");
-			System.out.println("5: Find a user");
-			System.out.println("6: Remove a user");
-			System.out.println("7: Add a follow");                                     
-			System.out.println("8: Remove Follow");                                  
-			System.out.println("9: Add new post");                                                    
-			System.out.println("10: Display network");
-			System.out.println("11: Display statistics");
-			System.out.println("12: Update(run a time-step)");
-			System.out.println("13: Save network");
-			System.out.println("14: Exit \n");
+			System.out.println("2: Set probabilities");
+			System.out.println("3: Insert new user");
+			System.out.println("4: Find a user");
+			System.out.println("5: Remove a user");
+			System.out.println("6: Add a follow");                                     
+			System.out.println("7: Remove Follow");                                  
+			System.out.println("8: Add new post");                                                    
+			System.out.println("9: Display network");
+			System.out.println("10: Display statistics");
+			System.out.println("11: Update(run a time-step)");
+			System.out.println("12: Save network");
+			System.out.println("13: Exit \n");
 			
-			option = inputInteger("Please input the number next to the option:","ERROR: That wasn't a choice. Please select one of the 14 options \n \n",1,14); 
+			option = inputInteger("Please input the number next to the option:","ERROR: That wasn't a choice. Please select one of the 14 options \n \n",1,13); 
 			
 			switch(option)
 			{
 				case 1:
-					loadFile(graph, fileMgr); 
+					loadFile(); 
 				break;
-				case 2: //Reading in the event file 
-					loadFile(graph, fileMgr); 
-				break;
-				case 3:
+				case 2:
 					followProb = inputDouble("Please input the probability of following (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 					likeProb = inputDouble("Please input the probability of liking (0-1):","ERROR: Please select a number between 0 and 1 (Can be decimals)", 0, 1);
 				break;	
+				case 3:
+					insertNewUser();
+					break;
 				case 4:
-					insertNewUser(graph);
+					findUser();
 					break;
 				case 5:
-					findUser(graph);
+					removeUser();
 					break;
 				case 6:
-					removeUser(graph);
+					addFollow();
 					break;
 				case 7:
-					addFollow(graph);
+					removeFollow();
 					break;
 				case 8:
-					removeFollow(graph);
+					insertPostManual();
 					break;
 				case 9:
-					insertPostManual(graph);
+					displayNetwork();	
 					break;
 				case 10:
-					DSAQueue listDisplay = new DSAQueue();
-					graph.displayAsList(listDisplay);
-					Iterator iter = listDisplay.iterator();
-					while (iter.hasNext())
-					{
-						System.out.print(iter.next());
-					}
+					displayStats();
 					break;
-				case 11:
-					DSAQueue statQueue = new DSAQueue();
-					graph.displayStats(statQueue);
-					Iterator statIter = statQueue.iterator();
-					while (statIter.hasNext())
-					{
-						System.out.print(statIter.next());
-					}
-					break;
-				case 12: //Run update/time-step
+				case 11: //Run update/time-step
 					graph.timeStep(likeProb, followProb);
 					break;
-				case 13:
-					saveNetwork(graph, fileMgr);
+				case 12:
+					saveNetwork();
 					break;
-				case 14:
+				case 13:
 					System.out.println("You have selected to exit. Good Bye"); //If the user wants to exit the program
 					break;
 			}
 
 		} 
-		while (option != 14); //Validation to ensure that this menu keeps being outputted unless the options in the selected range has been chosen 
+		while (option != 13); //Validation to ensure that this menu keeps being outputted unless the options in the selected range has been chosen 
 	}
 
 	/************************************
@@ -144,7 +128,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Menu for when the user picks to load networks/events from a file
 	***************************************************************************/
-	public void loadFile(DSAGraph graph, FileManager fileMgr) 
+	public void loadFile() 
 	{
 		String fileName;
 		int count = 0; //Count is 0 since no line has been processed yet
@@ -169,7 +153,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: When the user wants to save the network to a file in its current state in .txt
 	*****************************************************************************************/
-	public void saveNetwork(DSAGraph graph, FileManager fileMgr)
+	public void saveNetwork()
 	{
 		System.out.println("\nNOTE: If you enter a file that already exists, it will overwrite the file!");
 		String fileName = getFileName();
@@ -183,7 +167,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Inputs a post for a specefied user
 	******************************************************************************************/
-	public void insertPostManual(DSAGraph graph)
+	public void insertPostManual()
 	{	
 		String user, post;
 		double clickBait;
@@ -201,7 +185,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Inputs a new user into social network
 	******************************************************************************************/
-	public void insertNewUser(DSAGraph graph)
+	public void insertNewUser()
 	{
 		String user;
 		user = inputNewUser("\nPlease input the name of the new user:", "ERROR: Can't have empty name for user"); 
@@ -216,7 +200,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Makes the specefied user follow another person
 	******************************************************************************************/
-	public void addFollow(DSAGraph graph)
+	public void addFollow()
 	{
 		String main, follow;
 		main = inputUser("\nPlease input the name of the user that wants to follow:", "ERROR: Can't have empty name for user"); 
@@ -232,7 +216,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Finds a user and displays all their information
 	******************************************************************************************/
-	public void findUser(DSAGraph graph)
+	public void findUser()
 	{
 		String user;
 		
@@ -254,7 +238,7 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Finds the user specefied and then removes them from the network
 	******************************************************************************************/
-	public void removeUser(DSAGraph graph)
+	public void removeUser()
 	{
 		String userName;
 		userName = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
@@ -269,13 +253,35 @@ public class UserInterface
 	EXPORT: none
 	ASSERTION: Finds the user, and then finds the user in their follow list and removes it
 	******************************************************************************************/
-	public void removeFollow(DSAGraph graph)
+	public void removeFollow()
 	{
 		String userName, userName1;
 		userName = inputUser("\nPlease input the name of the user you want to remove follow from:", "ERROR: User not found!");
 		userName1 = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
 
 		graph.removeFollow(userName, userName1);
+	}
+
+	public void displayNetwork()
+	{
+		DSAQueue listDisplay = new DSAQueue();
+		graph.displayAsList(listDisplay);
+		Iterator iter = listDisplay.iterator();
+		while (iter.hasNext())
+		{
+			System.out.print(iter.next());
+		}
+	}
+
+	public void displayStats()
+	{
+		DSAQueue statQueue = new DSAQueue();
+		graph.displayStats(statQueue);
+		Iterator statIter = statQueue.iterator();
+		while (statIter.hasNext())
+		{
+			System.out.print(statIter.next());
+		}
 	}
 	
 	/*************************

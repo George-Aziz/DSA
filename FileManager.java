@@ -150,17 +150,13 @@ public class FileManager
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(bw);
 
-
 			Iterator iter = queue.iterator();
 			while (iter.hasNext())
             {
                 pw.print(iter.next());
             }
 
-
 			pw.close(); //Writer must be closed
-			message = "Network File succesfully saved!";
-			UserInterface.showMessage(message);
 		}
 		catch (IOException e)
 		{
