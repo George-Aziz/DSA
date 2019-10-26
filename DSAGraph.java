@@ -78,8 +78,8 @@ public class DSAGraph
             userOne = getUser(userName); //gets user with userName
             String name = userOne.getUserName();
             Post newPost = new Post(postData, name, clickBait); //Makes a new post with the name of the user
-            userOne.addPost(newPost); //Adds the post into the user's Posts List
             postCount++; //Increments the overall amount of posts  for sorting at a later time
+            userOne.addPost(newPost); //Adds the post into the user's Posts List
             UI.showMessage(name + " has added a new post!");
         }
     }
@@ -750,7 +750,6 @@ public class DSAGraph
             userName = inUserName;
             followCount = 0;
             followerCount = 0;
-            postCount = 0;
         }
 
         public String getUserName()
