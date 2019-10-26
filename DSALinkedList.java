@@ -10,7 +10,7 @@
 import java.util.*;
 import java.io.*;
 
-public class DSALinkedList implements Iterable , Serializable
+public class DSALinkedList implements Iterable
 {
     //Private Classfield
     private DSAListNode head;
@@ -268,7 +268,7 @@ public class DSALinkedList implements Iterable , Serializable
     * PRIVATE INNER CLASS: DSAListNode
     * Class that contains all data for a list node including its value, the next and prev references
     * ***************************************************************************************************/
-    private class DSAListNode implements Serializable
+    private class DSAListNode 
     {
         //Class Fields
         public Object value;

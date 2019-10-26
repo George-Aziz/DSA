@@ -10,7 +10,7 @@
 import java.util.*;
 import java.io.*;
 
-public class DSAQueue implements Iterable, Serializable
+public class DSAQueue implements Iterable
 {
     //Class fields
     private DSALinkedList list;
