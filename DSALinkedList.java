@@ -1,9 +1,16 @@
+/*****************************************************************************
+*  Author: George Aziz
+*  Date Created: 
+*  Date Last Modified: 26/10/2019 
+*  Purpose: A Class responsible for Linked List
+******************************************************************************/
+
 import java.util.*;
 import java.io.*;
 
 public class DSALinkedList implements Iterable , Serializable
 {
-    //Classfield
+    //Private Classfield
     private DSAListNode head;
     private DSAListNode tail;
     
@@ -13,7 +20,12 @@ public class DSALinkedList implements Iterable , Serializable
         tail = null;
     }
 
-    //Mutator
+    /******************************************************************
+    * SUBMODULE: insertFirst()
+    * IMPORTS: newValue (Object)
+    * EXPORTS: none
+    * ASSERTION: adds a new node at the head position of the linked list
+    * *****************************************************************/
     public void insertFirst(Object newValue)
     {
         DSAListNode newNd = new DSAListNode(newValue);
@@ -30,6 +42,12 @@ public class DSALinkedList implements Iterable , Serializable
             head = newNd; //New Node becomes the new head
     }
 
+    /******************************************************************
+    * SUBMODULE: insertLast()
+    * IMPORTS: newValue (Object)
+    * EXPORTS: none
+    * ASSERTION: adds a new node at the tail position of the linked list
+    * *****************************************************************/
     public void insertLast(Object newValue)
     {
         DSAListNode newNd = new DSAListNode(newValue);
@@ -46,12 +64,23 @@ public class DSALinkedList implements Iterable , Serializable
             tail = newNd; //New Node that has entered becomes the new tail
     }
 
+    /******************************************************************
+    * SUBMODULE: isEmpty()
+    * IMPORTS: none
+    * EXPORTS: true/false (Boolean)
+    * ASSERTION: Checks if linkedlist is empty
+    * *****************************************************************/
     public boolean isEmpty()
     {
 	    return head == null;
     }
 
-    //Accessor
+    /******************************************************************
+    * SUBMODULE: peekFirst()
+    * IMPORTS: none
+    * EXPORTS: nodeValue (Object)
+    * ASSERTION: Checks the head of the linkedlist
+    * *****************************************************************/
     public Object peekFirst()
     {
         Object nodeValue;
@@ -66,6 +95,12 @@ public class DSALinkedList implements Iterable , Serializable
         return nodeValue;
     }
 
+    /******************************************************************
+    * SUBMODULE: peekFirst()
+    * IMPORTS: none
+    * EXPORTS: nodeValue (Object)
+    * ASSERTION: Checks the tail of the linkedlist
+    * *****************************************************************/
     public Object peekLast()
     {
         Object nodeValue;
@@ -82,6 +117,12 @@ public class DSALinkedList implements Iterable , Serializable
         return nodeValue;
     }
 
+    /******************************************************************
+    * SUBMODULE: removeFirst()
+    * IMPORTS: none
+    * EXPORTS: nodeValue (Object)
+    * ASSERTION: Removes the head node of the linked list
+    * *****************************************************************/
     public Object removeFirst()
     {
         Object nodeValue;
@@ -105,6 +146,12 @@ public class DSALinkedList implements Iterable , Serializable
         return nodeValue;
     }
 
+    /******************************************************************
+    * SUBMODULE: removeLast()
+    * IMPORTS: none
+    * EXPORTS: nodeValue (Object)
+    * ASSERTION: Removes the tail node of the linked list
+    * *****************************************************************/
     public Object removeLast()
     {
         Object nodeValue;
@@ -128,6 +175,12 @@ public class DSALinkedList implements Iterable , Serializable
         return nodeValue;
     }
 
+    /******************************************************************
+    * SUBMODULE: removeNode()
+    * IMPORTS: value (Object)
+    * EXPORTS: none
+    * ASSERTION: Removes a speceifc node no matter where it is
+    * *****************************************************************/
     public void removeNode(Object value)
     {
         if(head != null)
@@ -171,7 +224,11 @@ public class DSALinkedList implements Iterable , Serializable
     {
         return new DSALinkedListIterator(this); //Hooks the iterator to this DSALinkedList object
     }
-
+    
+    /*********************************************************
+    * PRIVATE INNER CLASS: DSALinkedListIterator
+    * Class that helps iterate over the whole Linked List
+    * *******************************************************/
     private class DSALinkedListIterator implements Iterator
     {
         private DSAListNode iterNext;
@@ -205,6 +262,10 @@ public class DSALinkedList implements Iterable , Serializable
         }
     }
     
+    /*****************************************************************************************************
+    * PRIVATE INNER CLASS: DSAListNode
+    * Class that contains all data for a list node including its value, the next and prev references
+    * ***************************************************************************************************/
     private class DSAListNode implements Serializable
     {
         //Class Fields
