@@ -4,6 +4,8 @@
 *  Date Last Modified: 26/10/2019
 *  Purpose: Handles all user input / output for this program ALSO interactive mode menu
 ***************************************************************************************/
+/* This File has been taken from my OOPD Assignment and adjusted to fit this assignment (Mainly the input validations) */
+/* Aziz, George. (2019). OOPD Assignment */
 
 import java.util.*;
 import java.io.*;

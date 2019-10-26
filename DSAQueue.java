@@ -4,6 +4,8 @@
 *  Date Last Modified: 26/10/2019 
 *  Purpose: A Class responsible for Queues ADT
 ******************************************************************************/
+/* This File has been taken from my DSA Practical 3 work */
+/* Aziz, George. (2019). DSA LinkedList/Stack/Queue Prac P03. */
 
 import java.util.*;
 import java.io.*;

@@ -4,6 +4,8 @@
 *  Date Last Modified: 26/10/2019 
 *  Purpose: A Class responsible for Linked List
 ******************************************************************************/
+/* This File has been taken from my DSA Practical 3 work and added a RemoveNode() function */
+/* Aziz, George. (2019). DSA LinkedList/Stack/Queue Prac P03. */
 
 import java.util.*;
 import java.io.*;

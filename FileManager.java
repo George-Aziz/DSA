@@ -5,7 +5,8 @@
 *  Purpose: Managing any file reading/writing including processing every line 
 *           of a loaded file
 ******************************************************************************/
-// This class is retrieved from: My OOPD Assignment from last semester 
+/* This File has been taken from my OOPD Assignment and adjusted to fit this assignment with readfile of file and writing */
+/* Aziz, George. (2019). OOPD Assignment */
 
 import java.util.*;
 import java.io.*;

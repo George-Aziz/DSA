@@ -1,9 +1,11 @@
 /*****************************************************************************
 *  Author: George Aziz
-*  Date Created: 13/10/2019
+*  Date Created: 
 *  Date Last Modified: 26/10/2019 
 *  Purpose: A Class responsible for the social graph/network
 ******************************************************************************/
+/* This File has been taken from my DSA Practical 5 work and adjusted to fit the network */
+/* Aziz, George. (2019). DSA Graphs Prac P05. */
 
 import java.util.*;
 import java.io.*;
