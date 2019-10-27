@@ -1,13 +1,5 @@
- /***************************************************************************
- *  FILE: TestLinkedList.java
- *  AUTHOR: Connor Beardsmore - 15504319
- *  UNIT: DSA120 Prac 8
- *  PURPOSE: Basic Test Harness For Linked List
- *  LAST MOD: 12/10/15
- *  REQUIRES: NONE
- ***************************************************************************/
-/* This Test Harness has been taken from my DSA Practical 3 work and I've added a removeNode() test */
-/* This test harness was provided to everyone during Practical 3 (2019 Sem 2) */
+/* This Test Harness has been taken from my DSA Practical 3 work and I've added a removeNode() test and changed some of the outputs */
+/* This test harness was provided to everyone during Practical 3 (2019 Sem 2) and the author is Connor Beardsmore */
 
 import java.io.*;
 
@@ -22,12 +14,10 @@ public class UnitTestLinkedList
         String sTestString;
         Object nodeValue;
 
-//---------------------------------------------------------------------------
 
         System.out.println("\n\nTesting Normal Conditions - Constructor");
         System.out.println("=======================================");
 
-        // TEST 1 : CONSTRUCTOR
         try {
             iNumTests++;
             ll = new DSALinkedList();
@@ -38,12 +28,10 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println("FAILED"); }
 
-//---------------------------------------------------------------------------
 
-        System.out.println("\nTest inserting first and removing first (stack behaviour)");
+        System.out.println("\nTest inserting first and removing first");
         System.out.println("==========================================================");
-
-        // TEST 2 : INSERT FIRST
+   
         try {
             iNumTests++;
             System.out.print("Testing insertFirst(): ");
@@ -54,7 +42,6 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println("FAILED"); }
 
-        // TEST 3 : PEEK LAST
         try {
             iNumTests++;
             System.out.print("Testing peekLast(): ");
@@ -65,7 +52,6 @@ public class UnitTestLinkedList
             System.out.println("passed   ");
         } catch(Exception e) { System.out.println(e.getMessage()); }
 
-        // TEST 4 : REMOVE FIRST
         try {
             iNumTests++;
             System.out.print("Testing removeFirst(): ");
@@ -82,7 +68,6 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println("FAILED"); }
 
-        // TEST 5 : IS EMPTY
         try {
             iNumTests++;
             System.out.print("Testing isEmpty(): ");
@@ -90,12 +75,10 @@ public class UnitTestLinkedList
             System.out.println("FAILED");
         } catch(Exception e) { iNumPassed++; System.out.println("passed"); }
 
-//---------------------------------------------------------------------------
 
-        System.out.println("\nTest inserting last and removing first (queue behaviour)");
+        System.out.println("\nTest inserting last and removing first");
         System.out.println("========================================================");
 
-        // TEST 6 : INSERT LAST()
         try {
             iNumTests++;
             System.out.print("Testing insertLast(): ");
@@ -106,7 +89,7 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println("FAILED"); }
 
-        // TEST 7 : PEEK LAST
+
         try {
             iNumTests++;
             System.out.print("Testing peekFirst(): ");
@@ -117,7 +100,7 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println("FAILED."); }
 
-        // TEST 8 : REMOVE FIRST
+
         try {
             iNumTests++;
             System.out.print("Testing removeFirst(): ");
@@ -134,7 +117,7 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println(e.getMessage()); }
 
-        // TEST 9 : IS EMPTY 2
+
         try {
             iNumTests++;
             System.out.print("Testing isEmpty(): ");
@@ -142,7 +125,7 @@ public class UnitTestLinkedList
             System.out.println("FAILED");
         } catch(Exception e) { iNumPassed++; System.out.println("passed"); }
 
-        // TEST 10 : INSERT FIRST
+
         try {
             iNumTests++;
             System.out.print("Testing insertFirst()");
@@ -153,7 +136,7 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println("FAILED"); }
 
-        // TEST 11: REMOVE NODE (From Middle)
+
         try {
             iNumTests++;
             System.out.print("Testing removeNode(): ");
@@ -164,11 +147,9 @@ public class UnitTestLinkedList
             System.out.println("passed");
         } catch(Exception e) { System.out.println(e.getMessage()); }
 
-//---------------------------------------------------------------------------
-
         // PRINT TEST SUMMARY
-        System.out.print("\nNumber PASSED: " + iNumPassed + "/" + iNumTests);
+        System.out.print("\nNumber of tests PASSED: " + iNumPassed + "/" + iNumTests);
         System.out.print(" -> " + (int)(double)iNumPassed/iNumTests*100 + "%\n");
     }
-//---------------------------------------------------------------------------
+
 }

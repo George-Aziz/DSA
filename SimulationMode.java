@@ -58,7 +58,7 @@ public class SimulationMode
 			{
 				graph.timeStep(likeProb, followProb); //Runs time step
 				timeStepCount++; //Increments count for log saving
-				String output = "Time-step: " + timeStepCount; 
+				String output = "\nTime-step: " + timeStepCount; 
 				UI.showMessage(output);
 				DSAQueue queue = new DSAQueue();
 				queue.enqueue(output); 

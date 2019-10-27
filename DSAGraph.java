@@ -572,6 +572,8 @@ public class DSAGraph
     * SUBMODULE: sortUser
     * Wrapper Method for merging but for Users
     * **************************************************************/
+    /* This method has been taken from my DSA Practical 8 work and adjusted to fit the network */
+    /* Aziz, George. (2019). DSA Graphs Prac P08. */
     public void sortUser(User[] array)
     {
         mergeSortRecurseU(array, 0, userCount-1);
@@ -581,6 +583,8 @@ public class DSAGraph
     * SUBMODULE: mergeSortRecurseU
     * Method for recursively calling merge but for Users
     * **************************************************************/
+    /* This method has been taken from my DSA Practical 8 work and adjusted to fit the network */
+    /* Aziz, George. (2019). DSA Graphs Prac P08. */
     private void mergeSortRecurseU(User[] array, int leftIdx, int rightIdx)
     {
         if (leftIdx < rightIdx)
@@ -598,6 +602,8 @@ public class DSAGraph
     * SUBMODULE: mergeUser
     * Method for merging but for Users
     * **************************************************************/
+    /* This method has been taken from my DSA Practical 8 work and adjusted to fit the network */
+    /* Aziz, George. (2019). DSA Graphs Prac P08. */
     private void mergeUser(User[] array, int leftIdx, int midIdx, int rightIdx)
     {
         User tempArr[] = new User[rightIdx - leftIdx + 1];
@@ -665,6 +671,8 @@ public class DSAGraph
     * SUBMODULE: sortPosts
     * Wrapper Method for merge sort but for post class
     * **************************************************************/
+    /* This method has been taken from my DSA Practical 8 work and adjusted to fit the network */
+    /* Aziz, George. (2019). DSA Graphs Prac P08. */
     public void sortPosts(Post[] array)
     {
         mergeSortRecurseP(array, 0, postCount-1);
@@ -674,6 +682,8 @@ public class DSAGraph
     * SUBMODULE: mergeSortRecurseP
     * Method for recursively sorting Posts
     * **************************************************************/
+    /* This method has been taken from my DSA Practical 8 work and adjusted to fit the network */
+    /* Aziz, George. (2019). DSA Graphs Prac P08. */
     private void mergeSortRecurseP(Post[] array, int leftIdx, int rightIdx)
     {
         if (leftIdx < rightIdx)
@@ -691,6 +701,8 @@ public class DSAGraph
     * SUBMODULE: mergePosts
     * Method for merging but for Posts
     * **************************************************************/
+    /* This method has been taken from my DSA Practical 8 work and adjusted to fit the network */
+    /* Aziz, George. (2019). DSA Graphs Prac P08. */
     private void mergePost(Post[] array, int leftIdx, int midIdx, int rightIdx)
     {
         Post tempArr[] = new Post[rightIdx - leftIdx + 1];
