@@ -57,7 +57,7 @@ public class UserInterface
 			System.out.println("12: Save network");
 			System.out.println("13: Exit \n");
 			
-			option = inputInteger("Please input the number next to the option:","ERROR: That wasn't a choice. Please select one of the 14 options \n \n",1,13); 
+			option = inputInteger("Please input the number next to the option:","ERROR: That wasn't a choice. Please select one of the 13 options \n \n",1,13); 
 			
 			switch(option)
 			{

@@ -180,25 +180,26 @@ public class DSALinkedList implements Iterable
     /******************************************************************
     * SUBMODULE: removeNode()
     * IMPORTS: value (Object)
-    * EXPORTS: none
+    * EXPORTS: remNode (Object)
     * ASSERTION: Removes a speceifc node no matter where it is
     * *****************************************************************/
-    public void removeNode(Object value)
+    public Object removeNode(Object value)
     {
-        if(head != null)
+        Object remNode = null; //By default it is null
+
+        if(!isEmpty())
         {
             if(head.getValue() == value)
             {
-                removeFirst(); // if the value is the head then the first node is removed
+                remNode = removeFirst(); // if the value is the head then the first node is removed
             }
             else if(tail.getValue() == value)
             {
-                removeLast(); // if the value is at the tail, the last node is removed
+                remNode = removeLast(); // if the value is at the tail, the last node is removed
             }
             else
             { 
                 DSAListNode node, nextNode;
-    
                 node = head;
                 if (node == null)
                 {
@@ -212,6 +213,7 @@ public class DSALinkedList implements Iterable
 
                         if (node.getValue() == value)
                         {
+                            remNode = node.getValue();
                             node.getNext().setPrev(node.getPrev()); // Makes the deleted node cut off from the references
                             node.getPrev().setNext(node.getNext());
                         }
@@ -220,6 +222,7 @@ public class DSALinkedList implements Iterable
                 }
             }  
         }
+        return remNode;
     }
 
     public Iterator iterator() //Return a new Iterator of internal type DSALinkedListIterator

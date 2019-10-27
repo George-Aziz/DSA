@@ -76,7 +76,6 @@ public class SimulationMode
 	*****************************************************************************************/
 	public void saveLogs(DSAQueue queue)
 	{
-		System.out.println("\nNOTE: If you enter a file that already exists, it will overwrite the file!"); 
 		String fileName = new SimpleDateFormat("dd-HH-mm' Sim.log'").format(new Date()); //Log File file name format
 		graph.displayStats(queue); //saves stats first
 		graph.displayAsList(queue); //Saves Network's Adjacency list after stats to show the overall state
