@@ -10,6 +10,8 @@
 import java.util.*;
 import java.io.*;
 import java.lang.Math.*;
+import java.util.concurrent.TimeUnit;
+
 public class UserInterface
 {	
 	//Class Fields 
@@ -93,7 +95,11 @@ public class UserInterface
 					displayStats();
 					break;
 				case 11: //Run update/time-step
+					//long startTime = System.nanoTime(); //Timing the methods
 					graph.timeStep(likeProb, followProb);
+					//long endTime = System.nanoTime();
+					//long timeElapsed = endTime - startTime;
+					//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 					break;
 				case 12: //Saves the network to a file 
 					saveNetwork();
@@ -133,10 +139,14 @@ public class UserInterface
 	{
 		String fileName;
 		int count = 0; //Count is 0 since no line has been processed yet
-		
+
 		//Initial input to see if the file exists
 		fileName = getFileName();
+		//long startTime = System.nanoTime(); //Timing the methods
 		count = fileMgr.readFile(fileName, graph);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 
 		//If the file inputted by the user is invalid, the while loop will start with the error message first and then another input
 		while (count == 0)		
@@ -159,7 +169,12 @@ public class UserInterface
 		System.out.println("\nNOTE: If you enter a file that already exists, it will overwrite the file!");
 		String fileName = getFileName();
 		DSAQueue queue = graph.exportNetwork();
+
+		//long startTime = System.nanoTime(); //Timing the methods
 		fileMgr.saveNetwork(fileName, queue, false); //False since we do not want to append
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 	
 	/****************************************************
@@ -175,8 +190,13 @@ public class UserInterface
 		
 		user = inputUser("\nPlease input the name of the user that wants to add a post:", "ERROR: User not found!"); 
 		post = inputPost("\nPlease input what the user will post:", "ERROR: Cannot have empty post!");
-		clickBait = inputClickBait("Please input the click bait factor (Above 0 Only!):","ERROR: Please select a number above 0 (Can be decimals)", 0);
+		clickBait = inputClickBait("Please input the click bait factor (Positive numbers only!):","ERROR: Please select a number above 0 (Can be decimals)", 0);
+		
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.addPost(user, post, clickBait);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 
 
@@ -191,7 +211,11 @@ public class UserInterface
 		String user;
 		user = inputNewUser("\nPlease input the name of the new user:", "ERROR: Can't have empty name for user"); 
 
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.addUser(user);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 
 
@@ -204,10 +228,13 @@ public class UserInterface
 	public void addFollow()
 	{
 		String main, follow;
-		main = inputUser("\nPlease input the name of the user that wants to follow:", "ERROR: Can't have empty name for user"); 
-		follow = inputUser("\nPlease input the name of the uer that " + main + " wants to follow:", "ERROR: Can't have empty name for user"); 
-
+		main = inputUser("\nPlease input the name of the user that wants to follow:", "ERROR: User Not Found!"); 
+		follow = inputUser("\nPlease input the name of the uer that " + main + " wants to follow:", "ERROR: User Not Found!"); 
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.addFollow(main, follow); //Follower follows "following"
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 
 
@@ -222,14 +249,19 @@ public class UserInterface
 		String user;
 		
 		user = inputUser("\nPlease input the name of the user you want to find:", "ERROR: User not found!");
-		DSAQueue queue = new DSAQueue();	
-		graph.displayUserInfo(user, queue);
+		DSAQueue queue = new DSAQueue();
 
+		//long startTime = System.nanoTime(); //Timing the methods
+		graph.displayUserInfo(user, queue);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 		Iterator iter = queue.iterator();
 		while (iter.hasNext())
 		{
 			System.out.print(iter.next());
 		}
+
 	}
 
 
@@ -243,8 +275,11 @@ public class UserInterface
 	{
 		String userName;
 		userName = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
-
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.removeUser(userName);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 
 
@@ -260,7 +295,11 @@ public class UserInterface
 		userName = inputUser("\nPlease input the name of the user you want to remove follow from:", "ERROR: User not found!");
 		userName1 = inputUser("\nPlease input the name of the user you want to remove:", "ERROR: User not found!");
 
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.removeFollow(userName, userName1);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 
 	/************************************************************************************
@@ -272,12 +311,16 @@ public class UserInterface
 	public void displayNetwork()
 	{
 		DSAQueue listDisplay = new DSAQueue();
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.displayAsList(listDisplay);
 		Iterator iter = listDisplay.iterator();
 		while (iter.hasNext())
 		{
 			System.out.print(iter.next());
 		}
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 
 	/******************************************************************************************
@@ -289,12 +332,16 @@ public class UserInterface
 	public void displayStats()
 	{
 		DSAQueue statQueue = new DSAQueue();
+		long startTime = System.nanoTime(); //Timing the methods
 		graph.displayStats(statQueue);
 		Iterator statIter = statQueue.iterator();
 		while (statIter.hasNext())
 		{
 			System.out.print(statIter.next());
 		}
+		long endTime = System.nanoTime();
+		long timeElapsed = endTime - startTime;
+		System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 	
 	/*************************
