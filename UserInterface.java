@@ -332,16 +332,16 @@ public class UserInterface
 	public void displayStats()
 	{
 		DSAQueue statQueue = new DSAQueue();
-		long startTime = System.nanoTime(); //Timing the methods
+		//long startTime = System.nanoTime(); //Timing the methods
 		graph.displayStats(statQueue);
 		Iterator statIter = statQueue.iterator();
 		while (statIter.hasNext())
 		{
 			System.out.print(statIter.next());
 		}
-		long endTime = System.nanoTime();
-		long timeElapsed = endTime - startTime;
-		System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
+		//long endTime = System.nanoTime();
+		//long timeElapsed = endTime - startTime;
+		//System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
 	}
 	
 	/*************************
